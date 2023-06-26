@@ -1,0 +1,26 @@
+
+
+
+first level
+a##b.
+.###.
+.....
+-
+a blob red 1
+b end  red 1
+-
+
+distant objective
+..###
+....#
+....a
+...b.
+.....
+...##
+.####
+-
+a blob red 1
+b end  red 1
+-
+
+

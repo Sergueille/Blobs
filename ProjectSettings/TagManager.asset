@@ -38,6 +38,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Grid
+    uniqueID: 4161611635
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Blobs
+    uniqueID: 3259196355
+    locked: 0
+  - name: Eyes
+    uniqueID: 335354611
+    locked: 0
+  - name: Particles
+    uniqueID: 2588671643
+    locked: 0
+  - name: UI
+    uniqueID: 2674241245
     locked: 0

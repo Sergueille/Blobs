@@ -7,18 +7,25 @@ public static class LevelLoader
     private static string currentText;
     private static int textPosition;
 
-    public static void ReadMainCollection()
+    public static List<LevelData> ReadMainCollection()
     {
-        TextAsset file = (TextAsset)Resources.Load("main.lvl");
+        TextAsset file = Resources.Load<TextAsset>("main");
         currentText = file.text;
         textPosition = 0;
-        ReadCollectionText();
+        return ReadCollectionText();
     }
 
-    private static void ReadCollectionText()
+    private static List<LevelData> ReadCollectionText()
     {
-        string title = ReadLine(); // Read title
+        List<LevelData> res = new List<LevelData>();
 
+        while (true)
+        {
+            if (IsEndOfFile()) break;
+            res.Add(ReadLevel());
+        }
+
+        return res;
     }
 
     private static LevelData ReadLevel()
@@ -26,28 +33,28 @@ public static class LevelLoader
         LevelData data = new LevelData();
         string title = ReadLine(); // Read title
 
-        data.size = new Vector2Int(0, -1);
+        data.title = title;
+        data.size = Vector2Int.zero;
         
         //// Get map lines
         string levelData = "";
-        string contentLine = "";
-        {
-            levelData += contentLine;
+        string contentLine;
+        while (true) {
             contentLine = ReadLine();
+            char firstChar = contentLine[0];
+
+            if (firstChar == '-')
+                break;
 
             if (data.size.x > 0 && contentLine.Length != data.size.x)
-                throw new System.Exception($"In level map '{title}': inconsistent line length on line '{contentLine}'");
+                throw new System.Exception($"In level map '{title}': inconsistent line length on line '{contentLine}', expected a length of {data.size.x}");
 
             data.size.x = contentLine.Length;
             data.size.y++;
+            levelData += contentLine;
         }
-        while (IsValidLevelMapCharacter(contentLine[0]))
 
-        // Make sure the next character is the separator
-        if (contentLine != "-")
-            throw new System.Exception($"In level map '{title}': expected a map character, got '{contentLine}'");
-
-        LevelObject[] objects = new LevelObject[26];
+        LevelObjectData[] objects = new LevelObjectData[26];
         int objectCountOnMap = 0;
 
         // Convert map to bool array
@@ -56,32 +63,35 @@ public static class LevelLoader
         {
             for (int y = 0; y < data.size.y; y++)
             {   
-                char c = levelData[x + (data.size.y - y - 1) * data.size.y]; 
-                int targetIndex = x + y * data.size.y;
+                char c = levelData[x + (data.size.y - y - 1) * data.size.x]; 
+                int targetIndex = x + y * data.size.x;
 
                 if (c == '.')
-                    data.data[targetIndex] = false;
-                else if (c == '#')
                     data.data[targetIndex] = true;
+                else if (c == '#')
+                    data.data[targetIndex] = false;
                 else if (IsValidLevelObjectCharacter(c))
                 {
                     objectCountOnMap++;
-                    objects[c - 'a'] = new LevelObject{
+                    objects[c - 'a'] = new LevelObjectData{
                         position = new Vector2Int(x, y)
                     };
                     
-                    data.data[targetIndex] = false;
+                    data.data[targetIndex] = true;
                 }
                 else
-                    throw new System.Exception($"In level map '{title}': expected a map character, got {c}");
+                    throw new System.Exception($"In level map '{title}' at position ({x}, {y}): expected a map character, got {c}");
             }
         }
 
         //// Get object lines
-        data.objects = new LevelObject[objectCountOnMap];
+        data.objects = new LevelObjectData[objectCountOnMap];
         int objectCountInObjects = 0;
         while (true)
         {
+            if (objectCountInObjects > objectCountOnMap)
+                throw new System.Exception($"In level objects '{title}': there are more objects described than there are on the map");
+
             contentLine = ReadLine();
 
             char c = contentLine[0];
@@ -92,7 +102,7 @@ public static class LevelLoader
             if (!IsValidLevelObjectCharacter(c))
                 throw new System.Exception($"In level objects '{title}': expected an object character, got {c}");
 
-            LevelObject obj = objects[c - 'a'];
+            LevelObjectData obj = objects[c - 'a'];
 
             if (obj == null)
                 throw new System.Exception($"In level objects '{title}': the object {c} is not present in the map");
@@ -109,6 +119,7 @@ public static class LevelLoader
             };
 
             obj.color = tokens[2] switch {
+                "none" => GameColor.none,
                 "red" => GameColor.red,
                 "blue" => GameColor.blue,
                 "green" => GameColor.green,
@@ -126,18 +137,21 @@ public static class LevelLoader
                 throw new System.Exception($"In level objects '{title}', object {c}: expected an integer, got '{tokens[3]}'");
             }
 
-            data.objects[objectCountOnMap] = obj;
+            data.objects[objectCountInObjects] = obj;
             objects[c - 'a'] = null; // Prevent multiple descriptions on the same object
 
             objectCountInObjects++;
         }
 
-        if (objectCountInObjects != objectCountOnMap)
+        if (objectCountInObjects < objectCountOnMap)
             throw new System.Exception($"In level objects '{title}': some objects are present on the map but not described below");
 
         return data;
     }
 
+    /// <summary>
+    /// Read until EOF or \n, ignoring whitespace. Throw if directly EOF without anything in front of it
+    /// </summary>
     private static string ReadLine()
     {
         char start = ReadChar();
@@ -149,7 +163,7 @@ public static class LevelLoader
         }
 
         textPosition++;
-        return start.ToString() + currentText[startPosition..(textPosition - 1)];
+        return start.ToString() + currentText[startPosition..(textPosition - 1)].Replace("\r", "");
     }
 
     /// <summary>
@@ -157,7 +171,7 @@ public static class LevelLoader
     /// </summary>
     private static char ReadChar()
     {
-        while (textPosition < currentText.Length && " \n\t\r".Contains(currentText[textPosition]))
+        while (textPosition < currentText.Length && IsWhitespace(currentText[textPosition]))
         {
             textPosition++;
         }
@@ -178,4 +192,18 @@ public static class LevelLoader
     {
         return 'a' <= c && c <= 'z';
     } 
+
+    public static bool IsWhitespace(char c)
+    {
+        return " \n\t\r".Contains(c);
+    }
+
+    private static bool IsEndOfFile()
+    {
+        int pos = textPosition;
+        while (pos < currentText.Length && IsWhitespace(currentText[pos]))
+            pos++;
+
+        return pos == currentText.Length;
+    }
 }
