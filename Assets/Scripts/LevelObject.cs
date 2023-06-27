@@ -7,4 +7,5 @@ public abstract class LevelObject : MonoBehaviour
 
     public abstract void Init(LevelObjectData data);
     public abstract void Move(Vector2Int newPosition);
+    public abstract void DestroyObject();
 }

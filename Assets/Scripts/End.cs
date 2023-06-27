@@ -20,4 +20,10 @@ public class End : LevelObject
     {
         // TODO
     }
+    
+
+    public override void DestroyObject()
+    {
+        // TODO
+    }
 }

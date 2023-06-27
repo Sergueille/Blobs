@@ -10,7 +10,7 @@ a blob red 1
 b end  red 1
 -
 
-distant objective
+the stairs
 ..###
 ....#
 ....a
@@ -19,8 +19,47 @@ distant objective
 ...##
 .####
 -
-a blob red 1
-b end  red 1
+a blob green 1
+b end  green 1
 -
 
+fusion
+a#c
+.#.
+...
+##.
+##b
+-
+a blob blue 1
+c blob blue 1
+b end  blue 2
+-
+
+no fusion
+#c.d.
+a...b
+..#..
+.....
+#...#
+-
+a blob red  1
+b blob blue 1
+c end  red  1
+d end  blue 1
+-
+
+color test!
+##..##
+#c...#
+d....e
+#....#
+#..#.#
+b.##.a
+-
+a blob red   2
+b blob blue  1
+c blob green 1
+d blob cyan  1
+e blob brown 1
+-
 

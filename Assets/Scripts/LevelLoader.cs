@@ -105,7 +105,7 @@ public static class LevelLoader
             LevelObjectData obj = objects[c - 'a'];
 
             if (obj == null)
-                throw new System.Exception($"In level objects '{title}': the object {c} is not present in the map");
+                throw new System.Exception($"In level objects '{title}': the object {c} is not present in the map or have been described twice");
 
             string[] tokens = contentLine.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
 
@@ -144,7 +144,7 @@ public static class LevelLoader
         }
 
         if (objectCountInObjects < objectCountOnMap)
-            throw new System.Exception($"In level objects '{title}': some objects are present on the map but not described below");
+            throw new System.Exception($"In level objects '{title}': there are {objectCountOnMap} objects on map, bun only {objectCountInObjects} objects described");
 
         return data;
     }

@@ -44,16 +44,19 @@ public class GameManager : MonoBehaviour
 
     private List<GameObject> tiles;
 
+    private List<LevelObject> objectToDestroyOnUpdate;
+
     private void Awake()
     {
         i = this;
         tiles = new List<GameObject>();
+        objectToDestroyOnUpdate = new List<LevelObject>();
     }
 
     private void Start()
     {
         currentCollection = LevelLoader.ReadMainCollection();
-        MakeLevel(currentCollection[1]);
+        MakeLevel(currentCollection[4]); // TEST
     }
 
     private void Update()
@@ -255,28 +258,39 @@ public class GameManager : MonoBehaviour
 
     private void MoveObjectOneTile(Vector2Int objectPos, Vector2Int direction)
     {
-        if (GetObject(objectPos) == null) return; // No object
+        LevelObject current = GetObject(objectPos);
+        if (current == null) return; // No object
+        if (objectToDestroyOnUpdate.Contains(current)) return; // Consider as destroyed
 
-        Vector2Int target = objectPos + direction;
-
-        if (!GetTile(target)) return; // There is a wall
-
-        LevelObject onTarget = GetObject(target);
-        if (onTarget != null) // There is another object
+        if (current is Blob)
         {
-            if (onTarget is Blob)
-            {
-                // TODO: handle fusion
-                return;
-            }
-            else if (onTarget is End)
-            {
-                // TODO: handle end
-                return;
-            }
-        }
+            Vector2Int target = objectPos + direction;
 
-        MoveObject(objectPos, target); // The object can move successfully
+            if (!GetTile(target)) return; // There is a wall
+
+            LevelObject onTarget = GetObject(target);
+            if (onTarget != null) // There is another object
+            {
+                if (onTarget is Blob)
+                {
+                    // Fusion!
+                    Blob other = onTarget as Blob;
+                    Blob currentBlob = current as Blob;
+
+                    currentBlob.AddEyes(other.data.eyes);
+                    currentBlob.SetColor(other.data.color | current.data.color);
+
+                    objectToDestroyOnUpdate.Add(other);
+                }
+                else if (onTarget is End)
+                {
+                    // TODO: handle end
+                    return;
+                }
+            }
+
+            MoveObject(objectPos, target); // The object can move successfully
+        }
     }
 
     /// <summary>
@@ -294,15 +308,19 @@ public class GameManager : MonoBehaviour
                     obj.Move(new Vector2Int(x, y));
             }
         }
+
+        for (int i = 0; i < objectToDestroyOnUpdate.Count; i++)
+        {
+            objectToDestroyOnUpdate[i].DestroyObject();
+        }
+
+        objectToDestroyOnUpdate.Clear();
     }
 
     private void MoveObject(Vector2Int from, Vector2Int to)
     {
         int fromIndex = from.x + from.y * currentLevel.size.x;
         int toIndex = to.x + to.y * currentLevel.size.x;
-
-        if (levelObjects[toIndex] != null)
-            Debug.LogError("Uuuh? Tried to move an object to a tile on which there ae already an object");
 
         levelObjects[toIndex] = levelObjects[fromIndex];
         levelObjects[fromIndex] = null;
