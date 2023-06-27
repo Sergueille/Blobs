@@ -4,25 +4,22 @@ using UnityEngine;
 
 public class End : LevelObject
 {
-
     public override void Init(LevelObjectData data)
     {
-        this.data = data;
-        // TODO
+        base.Init(data);
     }
 
-    public override void Move(Vector2Int newPosition)
+    protected override void MoveVisual()
     {
         throw new System.Exception("Shouldn't move an end object");
     }
 
-    public void SetColor(GameColor color, bool immediate = false)
+    protected override void SetColorVisual(bool immediate = false)
     {
         // TODO
     }
     
-
-    public override void DestroyObject()
+    protected override void DestroyImmediately()
     {
         // TODO
     }

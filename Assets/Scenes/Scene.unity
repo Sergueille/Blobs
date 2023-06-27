@@ -270,6 +270,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a28070e1fa1540b4e87c5babdaeff02c, type: 3}
   tilePrefab: {fileID: 5603017567272469124, guid: 78e74fba34d053b488bab16d44d745a7, type: 3}
   blobPrefab: {fileID: 954094274137628027, guid: f2c580c574424cd4bba4f1d4846488f2, type: 3}
+  particlesPrefab: {fileID: 5330683513172667509, guid: 31039e68a74df4c478f4ceeef6ca7aaa, type: 3}
 --- !u!4 &823548817
 Transform:
   m_ObjectHideFlags: 0

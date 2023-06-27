@@ -35,6 +35,20 @@ c blob blue 1
 b end  blue 2
 -
 
+superfusion
+a#b#c#d
+.#.#.#.
+...#...
+##.#.##
+##....e
+-
+a blob blue  1
+b blob green 1
+c blob blue  1
+d blob red   1
+e end brown  4
+-
+
 no fusion
 #c.d.
 a...b

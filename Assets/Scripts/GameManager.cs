@@ -26,7 +26,8 @@ public class GameManager : MonoBehaviour
 
     [System.NonSerialized] public List<LevelData> currentCollection;
     [System.NonSerialized] public LevelData currentLevel;
-    [System.NonSerialized] public LevelObject[] levelObjects;
+    [System.NonSerialized] public LevelObject[] levelObjects; // Stored by their positions (x + y * sizeX)
+    [System.NonSerialized] public LevelObject[] allLevelObjects; // Stored in order
 
     public Color[] colors;
 
@@ -42,15 +43,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private GameObject blobPrefab;
 
-    private List<GameObject> tiles;
+    public GameObject particlesPrefab;
 
-    private List<LevelObject> objectToDestroyOnUpdate;
+    private List<GameObject> tiles;
 
     private void Awake()
     {
         i = this;
         tiles = new List<GameObject>();
-        objectToDestroyOnUpdate = new List<LevelObject>();
     }
 
     private void Start()
@@ -151,6 +151,8 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        allLevelObjects = new LevelObject[level.objects.Length];
+        int i = 0;
         levelObjects = new LevelObject[level.size.x * level.size.y];
         foreach (LevelObjectData data in level.objects)
         {
@@ -159,11 +161,14 @@ public class GameManager : MonoBehaviour
                 Blob blob = Instantiate(blobPrefab, GetScreenPosition(data.position), Quaternion.identity).GetComponent<Blob>();
                 blob.Init(data);
                 levelObjects[data.position.x + data.position.y * currentLevel.size.x] = blob;
+                allLevelObjects[i] = blob;
             }
             else if (data.type == ObjectType.end)
             {
                 // TODO: create end object
             }
+
+            i++;
         }
     }
 
@@ -260,7 +265,6 @@ public class GameManager : MonoBehaviour
     {
         LevelObject current = GetObject(objectPos);
         if (current == null) return; // No object
-        if (objectToDestroyOnUpdate.Contains(current)) return; // Consider as destroyed
 
         if (current is Blob)
         {
@@ -277,10 +281,14 @@ public class GameManager : MonoBehaviour
                     Blob other = onTarget as Blob;
                     Blob currentBlob = current as Blob;
 
+                    currentBlob.MakeParticlesOnApply(currentBlob.data.color);
+                    currentBlob.MakeParticlesOnApply(other.data.color);
+
                     currentBlob.AddEyes(other.data.eyes);
                     currentBlob.SetColor(other.data.color | current.data.color);
 
-                    objectToDestroyOnUpdate.Add(other);
+
+                    DestroyLevelObject(target);
                 }
                 else if (onTarget is End)
                 {
@@ -298,23 +306,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateObjects()
     {
-        for (int x = 0; x < currentLevel.size.x; x++)
+        foreach (LevelObject obj in allLevelObjects)
         {
-            for (int y = 0; y < currentLevel.size.y; y++)
-            {
-                LevelObject obj = levelObjects[x + y * currentLevel.size.x];
-
-                if (obj != null)
-                    obj.Move(new Vector2Int(x, y));
-            }
+            if (obj != null)
+                obj.ApplyChanges();
         }
-
-        for (int i = 0; i < objectToDestroyOnUpdate.Count; i++)
-        {
-            objectToDestroyOnUpdate[i].DestroyObject();
-        }
-
-        objectToDestroyOnUpdate.Clear();
     }
 
     private void MoveObject(Vector2Int from, Vector2Int to)
@@ -322,8 +318,28 @@ public class GameManager : MonoBehaviour
         int fromIndex = from.x + from.y * currentLevel.size.x;
         int toIndex = to.x + to.y * currentLevel.size.x;
 
+        levelObjects[fromIndex].Move(to);
+
         levelObjects[toIndex] = levelObjects[fromIndex];
         levelObjects[fromIndex] = null;
+    }
+
+    private void DestroyLevelObject(Vector2Int pos)
+    {
+        int index = pos.x + pos.y * currentLevel.size.x;
+        levelObjects[index].DestroyObject();
+        levelObjects[index] = null;
+    }
+
+    public void CreateParticles(GameColor color, Vector2 position)
+    {
+        ColoredParticleSystem ps = Instantiate(particlesPrefab, position, Quaternion.identity).GetComponent<ColoredParticleSystem>();
+        ps.transform.position = new Vector3(
+            ps.transform.position.x,
+            ps.transform.position.y,
+            -5
+        );
+        ps.Play(color);
     }
 }
 

@@ -137,6 +137,8 @@ MonoBehaviour:
   eyeCenterForce: 1.7
   eyesMargin: 0.2
   eyesRepulsionForce: 6
+  endMoveEyesForce: 1.4
+  endMoveEyesForceDuration: 0.25
   eyesSize:
     min: 0.3
     max: 0.4

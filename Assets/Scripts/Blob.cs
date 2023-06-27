@@ -16,13 +16,15 @@ public class Blob : LevelObject
     [SerializeField] private float eyeCenterForce;
     [SerializeField] private float eyesMargin;
     [SerializeField] private float eyesRepulsionForce;
-    [SerializeField] private float endMoveyesForce;
+    [SerializeField] private float endMoveEyesForce;
+    [SerializeField] private float endMoveEyesForceDuration;
 
     [SerializeField] private RandomRange eyesSize;
 
     private List<Eye> eyes;
-    private bool shouldBeDestroyed = false; // Used to delay destroy
-    private bool isMoving = false; // Used to delay actions after moving
+    private int eyeVisualsToBeAdded = 0;
+    
+    private Vector2 currentEndMoveEyesForce = Vector2.zero;
 
     private void Update()
     {
@@ -32,7 +34,7 @@ public class Blob : LevelObject
             Vector2 centerDirection = -eyes[i].transform.localPosition;
             Vector2 centerForce = centerDirection / eyeCenterForceDistance * eyeCenterForce;
 
-            Vector2 forceSum = centerForce;
+            Vector2 forceSum = centerForce + currentEndMoveEyesForce;
 
             for (int j = 0; j < eyes.Count; j++)
             {
@@ -52,80 +54,84 @@ public class Blob : LevelObject
 
     public override void Init(LevelObjectData data)
     {
-        this.data = data;
+        base.Init(data);
+
         blobSprite.transform.localScale = Vector3.one * GameManager.i.tileSize;
-        SetColor(data.color, true);
-
+        
         eyes = new List<Eye>();
-
         int eyeCount = data.eyes;
         data.eyes = 0;
         AddEyes(eyeCount);
-    }
-
-    public override void Move(Vector2Int newPosition)
-    {
-        if (data.position == newPosition) return;
-
-        isMoving = true;
-
-        Vector2 newScreenPosition = GameManager.i.GetScreenPosition(newPosition);
-        float distance = (newPosition - data.position).magnitude;
-        data.position = newPosition;
-        LeanTween.move(gameObject, newScreenPosition, moveSpeed * distance).setOnComplete(OnFinishedMove);
-    }
-
-    public void SetColor(GameColor color, bool immediate = false)
-    {
-        data.color = color;
-
-        if (immediate)
-            blobSprite.color = GameManager.i.colors[(int)color];
-        else
-            LeanTween.color(blobSprite.gameObject, GameManager.i.colors[(int)color], colorTransitionDuration);
+        AddEyeVisuals(); // Add manually first time
     }
 
     public void AddEyes(int count)
     {
-        for (int i = 0; i < count; i++)
-            AddEye();
+        data.eyes += count;
+        eyeVisualsToBeAdded += count;
     }
 
-    public void AddEye()
+    public override void ApplyChanges()
+    {
+        Vector2 newScreenPosition = GameManager.i.GetScreenPosition(data.position);
+        float distance = (data.position - oldPosition).magnitude;
+        Vector2 direction = data.position - oldPosition;
+
+        LeanTween.move(gameObject, newScreenPosition, moveSpeed * distance).setOnComplete(() => {
+            oldPosition = data.position;
+
+            if (eyeVisualsToBeAdded > 0)
+                AddEyeVisuals();
+
+            base.ApplyChanges();
+
+            // Apply force on eyes
+            LeanTween.value(endMoveEyesForce, 0, endMoveEyesForceDuration)
+                .setOnUpdate((val) => currentEndMoveEyesForce = direction.normalized * val);
+        });
+    }
+
+    protected override void MoveVisual() {} // Already handled in ApplyChanges function
+
+    protected override void DestroyImmediately()
+    {
+        shouldBeDestroyed = false;
+        // TODO: add particles
+        
+        // Remove eyes
+        for (int i = 0; i < eyes.Count; i++)
+        {
+            Destroy(eyes[i].gameObject);
+        }
+
+        eyes.Clear();
+
+        // Remove background
+        blobSprite.enabled = false;
+    }
+
+    private void AddEyeVisuals()
+    {
+        for (int i = 0; i < eyeVisualsToBeAdded; i++)
+            AddEyeVisual();
+
+        eyeVisualsToBeAdded = 0;
+    }
+
+    private void AddEyeVisual()
     {
         Eye newEye = Instantiate(eyePrefab, gameObject.transform).GetComponent<Eye>();
         newEye.transform.localScale = Vector3.one * eyesSize.GetRandom() * blobSprite.transform.localScale.x;
         newEye.transform.localPosition = new Vector3(Random.Range(-0.01f, 0.01f), Random.Range(-0.01f, 0.01f)); // Prevent eyes at exact same position
 
         eyes.Add(newEye);
-
-        data.eyes++;
     }
 
-    public override void DestroyObject()
-    {
-        shouldBeDestroyed = true;
-
-        if (!isMoving)
-            DestroyImmediately();
-    }
-
-    private void OnFinishedMove()
-    {
-        isMoving = false;
-
-        if (shouldBeDestroyed)
-        {
-            DestroyImmediately();
-        }
-
-        // Apply force on eyes
-    }
-
-    private void DestroyImmediately()
-    {
-        shouldBeDestroyed = false;
-        // TODO: add particles
-        Destroy(gameObject);
+    protected override void SetColorVisual(bool immediate = false)
+    {        
+        if (immediate)
+            blobSprite.color = GameManager.i.colors[(int)data.color];
+        else
+            LeanTween.color(blobSprite.gameObject, GameManager.i.colors[(int)data.color], colorTransitionDuration);
     }
 }
