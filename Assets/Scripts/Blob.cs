@@ -16,6 +16,7 @@ public class Blob : LevelObject
     [SerializeField] private float eyeCenterForce;
     [SerializeField] private float eyesMargin;
     [SerializeField] private float eyesRepulsionForce;
+    [SerializeField] private float endMoveyesForce;
 
     [SerializeField] private RandomRange eyesSize;
 
@@ -117,6 +118,8 @@ public class Blob : LevelObject
         {
             DestroyImmediately();
         }
+
+        // Apply force on eyes
     }
 
     private void DestroyImmediately()
