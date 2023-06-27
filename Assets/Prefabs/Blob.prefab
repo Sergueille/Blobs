@@ -130,5 +130,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blobSprite: {fileID: 954094273966440130}
+  eyePrefab: {fileID: 5372185197470898752, guid: 635d72f1bfcafc747b4f5c70958f33c4, type: 3}
   colorTransitionDuration: 0.2
   moveSpeed: 0.02
+  eyeCenterForceDistance: 0.3
+  eyeCenterForce: 1.7
+  eyesMargin: 0.1
+  eyesRepulsionForce: 15
+  eyesSize:
+    min: 0.35
+    max: 0.4

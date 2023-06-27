@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
             }
             else if (data.type == ObjectType.end)
             {
-                // TODO
+                // TODO: create end object
             }
         }
     }
