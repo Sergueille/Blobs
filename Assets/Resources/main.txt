@@ -85,14 +85,14 @@ f end  blue   1
 -
 
 traps
-...ad
-.####
-...c#
-###.#
-.##..
-...b#
-.##.#
-.#...
+...ad##
+.######
+.c...#.
+##.....
+.##.##.
+...b##.
+.##.###
+.#....#
 -
 a blob green  1
 b blob yellow 1
@@ -100,18 +100,41 @@ c end  green  1
 d end  yellow 1
 -
 
-color test!
-##..##
-#c...#
-d....e
-#....#
-#..#.#
-b.##.a
+color rules
+e.a..
+....#
+#.b..
+....f
+..c..
+.....
+..d.#
+#.###
 -
-a blob red   2
-b blob blue  1
-c blob green 1
-d blob cyan  1
-e blob brown 1
+a blob red     1
+b blob red     2
+c blob blue    1
+d blob green   1
+e end  magenta 3
+f end  yellow  2
+-
+
+
+same color
+#...##
+y..b..
+#x....
+#z.#.#
+m..g..
+#.....
+##....
+.....#
+#.####
+-
+y blob yellow  1
+m blob magenta 1
+b blob blue    1
+g blob green   1
+x end  yellow  2
+z end  magenta 2
 -
 

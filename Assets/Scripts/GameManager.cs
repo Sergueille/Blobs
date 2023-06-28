@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     [System.NonSerialized] public List<LevelData> currentCollection;
     [System.NonSerialized] public LevelData currentLevel;
     [System.NonSerialized] public int currentLevelId;
-    [System.NonSerialized] public LevelObject[] levelObjects; // Stored by their positions (x + y * sizeX)
     [System.NonSerialized] public LevelObject[] allLevelObjects; // Stored in order
 
     public Color[] colors;
@@ -59,7 +58,7 @@ public class GameManager : MonoBehaviour
     {
         currentCollection = LevelLoader.ReadMainCollection();
         currentLevelId = 0;
-        MakeLevel(currentCollection[currentLevelId]); // TEST
+        MakeLevel(currentCollection[currentLevelId]);
     }
 
     private void Update()
@@ -97,6 +96,13 @@ public class GameManager : MonoBehaviour
         {
             currentLevelId += currentCollection.Count - 1;
             currentLevelId %= currentCollection.Count;
+            MakeLevel(currentCollection[currentLevelId]);
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            currentCollection = LevelLoader.ReadMainCollection();
+            currentLevelId = 0;
             MakeLevel(currentCollection[currentLevelId]);
         }
     }
@@ -174,7 +180,6 @@ public class GameManager : MonoBehaviour
 
         allLevelObjects = new LevelObject[level.objects.Length];
         int i = 0;
-        levelObjects = new LevelObject[level.size.x * level.size.y];
         foreach (LevelObjectData data in level.objects)
         {
             GameObject prefab = null;
@@ -192,7 +197,6 @@ public class GameManager : MonoBehaviour
 
             LevelObject newObject = Instantiate(prefab).GetComponent<LevelObject>();
             newObject.Init(copiedData);
-            levelObjects[data.position.x + data.position.y * currentLevel.size.x] = newObject;
             allLevelObjects[i] = newObject;
 
             i++;
@@ -247,7 +251,23 @@ public class GameManager : MonoBehaviour
         if (x < 0 || x >= currentLevel.size.x || y < 0 || y >= currentLevel.size.y)
             return null;
 
-        return levelObjects[x + y * currentLevel.size.x];
+        foreach (LevelObject obj in allLevelObjects)
+            if (obj.data.position.x == x && obj.data.position.y == y && !obj.isDestroyed)
+                return obj;
+
+        return null;
+    }
+
+    public T GetObject<T>(int x, int y) where T : LevelObject
+    {
+        if (x < 0 || x >= currentLevel.size.x || y < 0 || y >= currentLevel.size.y)
+            return null;
+
+        foreach (LevelObject obj in allLevelObjects)
+            if (obj.data.position.x == x && obj.data.position.y == y && !obj.isDestroyed && obj is T)
+                return obj as T;
+
+        return null;
     }
 
     public LevelObject GetObject(Vector2Int pos)
@@ -324,25 +344,35 @@ public class GameManager : MonoBehaviour
                     currentBlob.AddEyes(other.data.eyes);
                     currentBlob.SetColor(other.data.color | current.data.color);
 
-                    DestroyLevelObject(target);
+                    other.DestroyObject();
+                    TestEnd(other);
                 }
                 else if (onTarget is End)
                 {
                     End other = onTarget as End;
 
-                    if (other.data.color == currentBlob.data.color && other.data.eyes == currentBlob.data.eyes)
-                    {
-                        currentBlob.MakeParticlesOnApply(onTarget.data.color);
-                        currentBlob.MakeParticlesOnApply(onTarget.data.color); // TWce for more particles!
-                        DestroyLevelObject(target);
-                        MoveObject(objectPos, target);
-                        DestroyLevelObject(target);
-                        return;
-                    }
+                    MoveObject(objectPos, target);
+                    TestEnd(currentBlob);
+
+                    return;
                 }
             }
 
             MoveObject(objectPos, target); // The object can move successfully
+        }
+    }
+
+    private void TestEnd(Blob blob)
+    {
+        End end = GetObject<End>(blob.data.position.x, blob.data.position.y);
+        if (end == null) return;
+
+        if (end.data.color == blob.data.color && end.data.eyes == blob.data.eyes)
+        {
+            blob.MakeParticlesOnApply(end.data.color);
+            blob.MakeParticlesOnApply(end.data.color); // Twice for more particles!
+            end.DestroyObject();
+            blob.DestroyObject();
         }
     }
 
@@ -360,20 +390,8 @@ public class GameManager : MonoBehaviour
 
     private void MoveObject(Vector2Int from, Vector2Int to)
     {
-        int fromIndex = from.x + from.y * currentLevel.size.x;
-        int toIndex = to.x + to.y * currentLevel.size.x;
-
-        levelObjects[fromIndex].Move(to);
-
-        levelObjects[toIndex] = levelObjects[fromIndex];
-        levelObjects[fromIndex] = null;
-    }
-
-    private void DestroyLevelObject(Vector2Int pos)
-    {
-        int index = pos.x + pos.y * currentLevel.size.x;
-        levelObjects[index].DestroyObject();
-        levelObjects[index] = null;
+        LevelObject obj = GetObject(from);
+        obj.Move(to);
     }
 
     public void CreateParticles(GameColor color, Vector2 position)

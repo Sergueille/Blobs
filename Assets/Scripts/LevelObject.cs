@@ -9,6 +9,8 @@ public abstract class LevelObject : MonoBehaviour
     protected Vector2Int oldPosition;
     protected bool shouldBeDestroyed = false;
 
+    public bool isDestroyed = false;
+
     protected List<GameColor> particlesToInstantiate;
 
     public virtual void Init(LevelObjectData data)
@@ -18,6 +20,7 @@ public abstract class LevelObject : MonoBehaviour
         gameObject.transform.localScale = Vector3.one * GameManager.i.tileSize;
         SetColorVisual(true);
 
+        isDestroyed = false;
         oldColor = data.color;
         oldPosition = data.position;
         particlesToInstantiate = new List<GameColor>();
@@ -31,6 +34,7 @@ public abstract class LevelObject : MonoBehaviour
     public void DestroyObject()
     {
         shouldBeDestroyed = true;
+        isDestroyed = true;
     }
     
     public void SetColor(GameColor color)
