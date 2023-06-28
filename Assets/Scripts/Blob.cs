@@ -54,10 +54,7 @@ public class Blob : LevelObject
 
     public override void Init(LevelObjectData data)
     {
-        base.Init(data);
-
-        blobSprite.transform.localScale = Vector3.one * GameManager.i.tileSize;
-        
+        base.Init(data);        
         eyes = new List<Eye>();
         int eyeCount = data.eyes;
         data.eyes = 0;
@@ -96,7 +93,6 @@ public class Blob : LevelObject
     protected override void DestroyImmediately()
     {
         shouldBeDestroyed = false;
-        // TODO: add particles
         
         // Remove eyes
         for (int i = 0; i < eyes.Count; i++)

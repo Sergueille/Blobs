@@ -24,18 +24,18 @@ b end  green 1
 -
 
 fusion
-a#c
-.#.
-...
-##.
-##b
+a#c#
+.#.#
+....
+###.
+###b
 -
 a blob blue 1
 c blob blue 1
 b end  blue 2
 -
 
-superfusion
+more fusion
 a#b#c#d
 .#.#.#.
 ...#...
@@ -50,16 +50,54 @@ e end brown  4
 -
 
 no fusion
-#c.d.
-a...b
-..#..
-.....
-#...#
+##.####
+#d..c##
+##..b##
+.......
+#a.#..#
+#.....#
+##...##
 -
 a blob red  1
 b blob blue 1
 c end  red  1
 d end  blue 1
+-
+
+crossroads
+.##
+d#.
+.a.
+.##
+.e#
+.##
+.##
+.b#
+c##
+f##
+-
+a blob green  1
+b blob red    1
+e blob blue   1
+c end  green  1
+d end  red    1
+f end  blue   1
+-
+
+traps
+...ad
+.####
+...c#
+###.#
+.##..
+...b#
+.##.#
+.#...
+-
+a blob green  1
+b blob yellow 1
+c end  green  1
+d end  yellow 1
 -
 
 color test!

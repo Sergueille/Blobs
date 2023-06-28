@@ -15,6 +15,7 @@ public abstract class LevelObject : MonoBehaviour
     {
         this.data = data;
         transform.position = GameManager.i.GetScreenPosition(data.position);
+        gameObject.transform.localScale = Vector3.one * GameManager.i.tileSize;
         SetColorVisual(true);
 
         oldColor = data.color;
