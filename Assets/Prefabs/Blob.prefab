@@ -129,6 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39df24695d67edd40b56914d9ad2cec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDestroyed: 0
   blobSprite: {fileID: 954094273966440130}
   eyePrefab: {fileID: 5372185197470898752, guid: 635d72f1bfcafc747b4f5c70958f33c4, type: 3}
   colorTransitionDuration: 0.2
@@ -139,6 +140,9 @@ MonoBehaviour:
   eyesRepulsionForce: 6
   endMoveEyesForce: 1.4
   endMoveEyesForceDuration: 0.25
+  squashDuration: 0.1
+  squashAmount: 0.1
+  squashTweenType: 9
   eyesSize:
     min: 0.3
     max: 0.4

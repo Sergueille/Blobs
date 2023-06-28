@@ -28,7 +28,7 @@ a#c#
 .#.#
 ....
 ###.
-###b
+b...
 -
 a blob blue 1
 c blob blue 1
@@ -36,17 +36,30 @@ b end  blue 2
 -
 
 more fusion
-a#b#c#d
-.#.#.#.
-...#...
-##.#.##
-##....e
+a#b##
+.....
+####x
+c#d##
+.....
+####y
 -
-a blob blue  1
-b blob green 1
-c blob blue  1
-d blob red   1
-e end brown  4
+a blob blue   1
+b blob green  1
+x end  cyan   2
+c blob red    1
+d blob green  1
+y end  yellow 2
+-
+
+brown
+e#f##
+.....
+g.##z
+-
+e blob blue   1
+f blob green  1
+g blob red    1
+z end  brown  3
 -
 
 no fusion
@@ -128,7 +141,6 @@ m..g..
 #.....
 ##....
 .....#
-#.####
 -
 y blob yellow  1
 m blob magenta 1
@@ -139,7 +151,7 @@ z end  magenta 2
 -
 
 
-same color
+two yellows
 .#...#
 a.xyzb
 #...#.
@@ -159,4 +171,53 @@ y end  yellow 2
 z end  yellow 2
 -
 
+big mess
+...##
+.#.##
+.wy.#
+#xz.#
+#d.##
+#a.##
+##.c#
+##..b
+-
+a blob magenta 1
+b blob blue    1
+c blob cyan    1
+d blob red     1
+w end  magenta 1
+x end  blue    1
+y end  cyan    1
+z end  red     1
+-
 
+a difficult sacrifice
+#.a..
+.z...
+b#x#c
+.#.#.
+..d..
+#....
+-
+a blob red   1
+b blob red   1
+c blob red   1
+d blob red   1
+x blob brown 1
+z end  red   3
+-
+
+guarded objective
+##.###
+...#..
+#.....
+##..g#
+#.....
+##b###
+##.xa#
+-
+a blob green 1
+b blob green 1
+g blob blue  1
+x end  blue  1
+-

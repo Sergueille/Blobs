@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Security.Cryptography.X509Certificates;
@@ -24,18 +25,18 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager i;
 
-    [System.NonSerialized] public List<LevelData> currentCollection;
-    [System.NonSerialized] public LevelData currentLevel;
-    [System.NonSerialized] public int currentLevelId;
-    [System.NonSerialized] public LevelObject[] allLevelObjects; // Stored in order
+    [NonSerialized] public List<LevelData> currentCollection;
+    [NonSerialized] public LevelData currentLevel;
+    [NonSerialized] public int currentLevelId;
+    [NonSerialized] public LevelObject[] levelObjects; // Stored in order
 
     public Color[] colors;
 
     [Tooltip("Proportion of the screen that will be outside the safe zone")]
     public float screenMargin = 0.1f;
 
-    [System.NonSerialized] public Vector2 levelCorner;
-    [System.NonSerialized] public float tileSize;
+    [NonSerialized] public Vector2 levelCorner;
+    [NonSerialized] public float tileSize;
 
     [SerializeField] private Camera mainCamera;
 
@@ -44,9 +45,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject blobPrefab;
     [SerializeField] private GameObject endPrefab;
 
+    [SerializeField] private Material bgStripes;
+    [SerializeField] private Material transitionStripes;
+    [SerializeField] private float stripesSpeed;
+    [SerializeField] private float transitionDuration;
+
+    [SerializeField] private float slideSensitivity;
+
     public GameObject particlesPrefab;
 
     private List<GameObject> tiles;
+
+    private Vector2 lastMousePosition;
+    private bool lastTimeMouseWasDown = false;
 
     private void Awake()
     {
@@ -59,17 +70,48 @@ public class GameManager : MonoBehaviour
         currentCollection = LevelLoader.ReadMainCollection();
         currentLevelId = 0;
         MakeLevel(currentCollection[currentLevelId]);
+        transitionStripes.SetFloat("_Discard", 1);
     }
 
     private void Update()
     {
-        // TODO: slide controls
-
+        // Key controls
         Vector2Int direction = Vector2Int.zero;
         if (Input.GetKeyDown(KeyCode.Q)) direction = Vector2Int.left;
         if (Input.GetKeyDown(KeyCode.D)) direction = Vector2Int.right;
         if (Input.GetKeyDown(KeyCode.Z)) direction = Vector2Int.up;
         if (Input.GetKeyDown(KeyCode.S)) direction = Vector2Int.down;
+
+        // Slide controls
+        if (Input.GetMouseButton(0))
+        {
+            if (lastTimeMouseWasDown)
+            {
+                Vector2 delta = (Vector2)Input.mousePosition - lastMousePosition;
+                float dist = delta.magnitude / Screen.height;
+
+                if (dist / Time.deltaTime > slideSensitivity)
+                {
+                    if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+                    {
+                        if (delta.x > 0) direction = Vector2Int.right;
+                        else             direction = Vector2Int.left;
+                    }
+                    else
+                    {
+                        if (delta.y > 0) direction = Vector2Int.up;
+                        else             direction = Vector2Int.down;
+                    }
+                }
+            }
+
+            lastMousePosition = Input.mousePosition;
+            lastTimeMouseWasDown = true;
+        }
+        else
+        {
+            lastTimeMouseWasDown = false;
+        }
 
         if (direction != Vector2Int.zero)
         {
@@ -79,11 +121,25 @@ public class GameManager : MonoBehaviour
                 MoveAllOneTile(direction);
 
             UpdateObjects();
+
+            // Check if level is finished
+            bool finished = true;
+            foreach (LevelObject obj in levelObjects)
+            {
+                if (obj != null && obj is End && !obj.isDestroyed)
+                {
+                    finished = false;
+                    break;
+                }
+            }
+
+            if (finished)
+                OnLevelComplete();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            MakeLevel(currentCollection[currentLevelId]);
+            MakeLevelWithTransition(currentLevelId);
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
@@ -105,6 +161,40 @@ public class GameManager : MonoBehaviour
             currentLevelId = 0;
             MakeLevel(currentCollection[currentLevelId]);
         }
+
+        bgStripes.SetFloat("_Shift", Time.time * stripesSpeed + 1);
+        transitionStripes.SetFloat("_Shift", Time.time * stripesSpeed + 1);
+    }
+
+    private void OnLevelComplete()
+    {
+        currentLevelId += 1;
+        currentLevelId %= currentCollection.Count;
+        MakeLevelWithTransition(currentLevelId);
+    }
+
+    public void MakeLevelWithTransition(int levelIndex)
+    {
+        MakeTransition(() => {
+            MakeLevel(currentCollection[levelIndex]);
+        });
+    }
+
+    public void MakeTransition(Action callback)
+    {
+        LeanTween.value(1, 0, transitionDuration / 2).setEaseInOutExpo().setOnUpdate(val => {
+            float actualVal = val < 0.01 ? 0 : val;
+            transitionStripes.SetFloat("_Discard", actualVal);
+        }).setOnComplete(() => {
+            transitionStripes.SetFloat("_Discard", 0);
+            callback();
+
+            LeanTween.value(0, 1, transitionDuration / 2).setEaseInOutExpo().setOnUpdate(val => {
+                transitionStripes.SetFloat("_Discard", val);
+            }).setOnComplete(() => {
+                transitionStripes.SetFloat("_Discard", 1);
+            });
+        });
     }
 
     public void MakeLevel(LevelData level)
@@ -172,13 +262,13 @@ public class GameManager : MonoBehaviour
                 }
 
                 tile.sprite = tileSprites[spriteIndex];
-                tile.transform.localScale = Vector3.one * tileSize;
+                tile.transform.localScale = Vector3.one * (tileSize + 0.005f);
 
                 tiles.Add(tile.gameObject);
             }
         }
 
-        allLevelObjects = new LevelObject[level.objects.Length];
+        levelObjects = new LevelObject[level.objects.Length];
         int i = 0;
         foreach (LevelObjectData data in level.objects)
         {
@@ -197,7 +287,7 @@ public class GameManager : MonoBehaviour
 
             LevelObject newObject = Instantiate(prefab).GetComponent<LevelObject>();
             newObject.Init(copiedData);
-            allLevelObjects[i] = newObject;
+            levelObjects[i] = newObject;
 
             i++;
         }
@@ -210,9 +300,9 @@ public class GameManager : MonoBehaviour
             Destroy(go);
         }
 
-        if (allLevelObjects != null)
+        if (levelObjects != null)
         {
-            foreach (LevelObject obj in allLevelObjects)
+            foreach (LevelObject obj in levelObjects)
             {
                 if (obj != null)
                     Destroy(obj.gameObject);
@@ -251,7 +341,7 @@ public class GameManager : MonoBehaviour
         if (x < 0 || x >= currentLevel.size.x || y < 0 || y >= currentLevel.size.y)
             return null;
 
-        foreach (LevelObject obj in allLevelObjects)
+        foreach (LevelObject obj in levelObjects)
             if (obj.data.position.x == x && obj.data.position.y == y && !obj.isDestroyed)
                 return obj;
 
@@ -263,7 +353,7 @@ public class GameManager : MonoBehaviour
         if (x < 0 || x >= currentLevel.size.x || y < 0 || y >= currentLevel.size.y)
             return null;
 
-        foreach (LevelObject obj in allLevelObjects)
+        foreach (LevelObject obj in levelObjects)
             if (obj.data.position.x == x && obj.data.position.y == y && !obj.isDestroyed && obj is T)
                 return obj as T;
 
@@ -383,7 +473,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateObjects()
     {
-        foreach (LevelObject obj in allLevelObjects)
+        foreach (LevelObject obj in levelObjects)
         {
             if (obj != null)
                 obj.ApplyChanges();

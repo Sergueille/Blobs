@@ -19,6 +19,10 @@ public class Blob : LevelObject
     [SerializeField] private float endMoveEyesForce;
     [SerializeField] private float endMoveEyesForceDuration;
 
+    [SerializeField] private float squashDuration;
+    [SerializeField] private float squashAmount;
+    [SerializeField] private LeanTweenType squashTweenType;
+
     [SerializeField] private RandomRange eyesSize;
 
     private List<Eye> eyes;
@@ -74,6 +78,22 @@ public class Blob : LevelObject
         float distance = (data.position - oldPosition).magnitude;
         Vector2 direction = data.position - oldPosition;
 
+        Vector3 squash;
+        Vector3 squash2;
+        if (direction.x == 0)
+        {
+            squash = new Vector3(1 - squashAmount, 1, 1);
+            squash2 = new Vector3(1, 1 - squashAmount, 1);
+        }
+        else
+        {
+            squash = new Vector3(1, 1 - squashAmount, 1);
+            squash2 = new Vector3(1 - squashAmount, 1, 1);
+        }
+
+        if (distance > 0)
+            LeanTween.scale(blobSprite.gameObject, squash, Mathf.Min(moveSpeed * distance, squashDuration)).setEase(squashTweenType);
+
         LeanTween.move(gameObject, newScreenPosition, moveSpeed * distance).setOnComplete(() => {
             oldPosition = data.position;
 
@@ -85,6 +105,15 @@ public class Blob : LevelObject
             // Apply force on eyes
             LeanTween.value(endMoveEyesForce, 0, endMoveEyesForceDuration)
                 .setOnUpdate((val) => currentEndMoveEyesForce = direction.normalized * val);
+
+            if (distance > 0)
+            {
+                LeanTween.moveLocal(blobSprite.gameObject, direction.normalized * squashAmount / 2, squashDuration).setEase(squashTweenType);
+                LeanTween.scale(blobSprite.gameObject, squash2, squashDuration).setEase(squashTweenType).setOnComplete(() => {
+                    LeanTween.scale(blobSprite.gameObject, Vector3.one, squashDuration).setEase(squashTweenType);
+                    LeanTween.moveLocal(blobSprite.gameObject, Vector3.zero, squashDuration).setEase(squashTweenType);
+                });
+            }
         });
     }
 

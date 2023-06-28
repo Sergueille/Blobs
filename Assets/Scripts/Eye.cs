@@ -24,7 +24,7 @@ public class Eye : MonoBehaviour
     {
         initialWhiteYSize = white.transform.localScale.y;
 
-        nextLookDirectionTime = Time.time + lookDirectionChangeTime.GetRandom();
+        nextLookDirectionTime = 0; // Change look direction now but blink later
         nextBlinkTime = Time.time + blinkTime.GetRandom();
     }
 
