@@ -345,12 +345,14 @@ public class GameManager : MonoBehaviour
                     currentBlob.SetColor(other.data.color | current.data.color);
 
                     other.DestroyObject();
-                    TestEnd(other);
+
+                    MoveObject(objectPos, target);
+
+                    TestEnd(currentBlob);
+                    return;
                 }
                 else if (onTarget is End)
                 {
-                    End other = onTarget as End;
-
                     MoveObject(objectPos, target);
                     TestEnd(currentBlob);
 

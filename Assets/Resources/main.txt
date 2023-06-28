@@ -138,3 +138,25 @@ x end  yellow  2
 z end  magenta 2
 -
 
+
+same color
+.#...#
+a.xyzb
+#...#.
+#...##
+##...c
+#e..##
+#...d.
+###.##
+-
+a blob green  1
+b blob green  1
+c blob red    1
+d blob red    1
+e blob green  2
+x end  green  2
+y end  yellow 2
+z end  yellow 2
+-
+
+
