@@ -55,7 +55,11 @@ public static class LevelLoader
         }
 
         LevelObjectData[] objects = new LevelObjectData[26];
-        int objectCountOnMap = 0;
+        int objectCountOnMapToDescribe = 0;
+
+        const int MAX_DIAMONDS = 16;
+        LevelObjectData[] diamonds = new LevelObjectData[MAX_DIAMONDS];
+        int diamondCount = 0;
 
         // Convert map to bool array
         data.data = new bool[data.size.x * data.size.y];
@@ -70,12 +74,24 @@ public static class LevelLoader
                     data.data[targetIndex] = true;
                 else if (c == '#')
                     data.data[targetIndex] = false;
+                else if (c == '!')
+                {
+                    if (diamondCount == MAX_DIAMONDS)
+                        throw new System.Exception($"In level map '{title}' at position ({x}, {y}): Are you serious? There are way too many diamonds in this level!");
+
+                    diamonds[diamondCount] = new LevelObjectData{
+                        position = new Vector2Int(x, y),
+                        color = GameColor.none,
+                        eyes = 0,
+                        type = ObjectType.diamond
+                    };
+                    diamondCount++;                    
+                    
+                    data.data[targetIndex] = true;
+                }
                 else if (IsValidLevelObjectCharacter(c))
                 {
-                    objectCountOnMap++;
-
-                    if (objects[c - 'a'] != null)
-                        throw new System.Exception($"In level map '{title}': the character {c} is found twice");
+                    objectCountOnMapToDescribe++;
 
                     objects[c - 'a'] = new LevelObjectData{
                         position = new Vector2Int(x, y)
@@ -84,16 +100,16 @@ public static class LevelLoader
                     data.data[targetIndex] = true;
                 }
                 else
-                    throw new System.Exception($"In level map '{title}' at position ({x}, {y}): expected a map character, got {c}");
+                    throw new System.Exception($"In level map '{title}' at position ({x}, {y}): expected a map character, got {c}. (maybe you forgot the '-' at the end of the map?)");
             }
         }
 
         //// Get object lines
-        data.objects = new LevelObjectData[objectCountOnMap];
+        data.objects = new LevelObjectData[objectCountOnMapToDescribe + diamondCount];
         int objectCountInObjects = 0;
         while (true)
         {
-            if (objectCountInObjects > objectCountOnMap)
+            if (objectCountInObjects > objectCountOnMapToDescribe)
                 throw new System.Exception($"In level objects '{title}': there are more objects described than there are on the map");
 
             contentLine = ReadLine();
@@ -147,8 +163,14 @@ public static class LevelLoader
             objectCountInObjects++;
         }
 
-        if (objectCountInObjects < objectCountOnMap)
-            throw new System.Exception($"In level objects '{title}': there are {objectCountOnMap} objects on map, bun only {objectCountInObjects} objects described");
+        if (objectCountInObjects < objectCountOnMapToDescribe)
+            throw new System.Exception($"In level objects '{title}': there are {objectCountOnMapToDescribe} objects on map, bun only {objectCountInObjects} objects described");
+
+        // Copy diamond array into data
+        for (int i = 0; i < diamondCount; i++)
+        {
+            data.objects[objectCountOnMapToDescribe + i] = diamonds[i];
+        }
 
         return data;
     }

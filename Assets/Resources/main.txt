@@ -251,14 +251,15 @@ g blob blue  1
 x end  blue  1
 -
 
-rect test
+diamond test
 a#.b
 ...#
 ..!.
-#...
+#..z
 -
 a blob green 1
 b blob green 2
+z end  blue  1
 -
 
 

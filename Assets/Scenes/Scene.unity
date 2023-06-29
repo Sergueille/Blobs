@@ -635,7 +635,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 500}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &728827467
 MonoBehaviour:
@@ -808,6 +808,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 5603017567272469124, guid: 78e74fba34d053b488bab16d44d745a7, type: 3}
   blobPrefab: {fileID: 954094274137628027, guid: f2c580c574424cd4bba4f1d4846488f2, type: 3}
   endPrefab: {fileID: 4925188552510339627, guid: a185ddfbc3e12d94b87dfb0cd7457092, type: 3}
+  diamondPrefab: {fileID: 8848905601334052506, guid: 81a6fcf5b0cc8eb49ac475698f324409, type: 3}
   bgStripes: {fileID: 2100000, guid: 9f3bfa7c51fd3ad48a7a0437e5468bb8, type: 2}
   transitionStripes: {fileID: 2100000, guid: 79821531854af1846bda9f19868f1ff6, type: 2}
   stripesSpeed: 0.02
@@ -1737,7 +1738,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1780035269
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1977,7 +1978,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2024309949
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2030,7 +2031,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2038,15 +2039,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 435
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2078,11 +2079,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 217.5
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -250
       objectReference: {fileID: 0}
     - target: {fileID: 507721662920010780, guid: 761cc6e4c71e6bc4ab27afd090a2cccf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

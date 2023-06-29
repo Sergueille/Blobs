@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum ObjectType
 {
-    blob, end
+    blob, end, diamond
 }
 
 public enum GameColor
@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private GameObject blobPrefab;
     [SerializeField] private GameObject endPrefab;
+    [SerializeField] private GameObject diamondPrefab;
 
     [SerializeField] private Material bgStripes;
     [SerializeField] private Material transitionStripes;
@@ -260,6 +261,10 @@ public class GameManager : MonoBehaviour
             {
                 prefab = endPrefab;
             }
+            else if (data.type == ObjectType.diamond)
+            {
+                prefab = diamondPrefab;
+            }
 
             LevelObjectData copiedData = data.Clone(); 
 
@@ -382,6 +387,11 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    public LevelObject GetObject(Vector2Int pos)
+    {
+        return GetObject(pos.x, pos.y);
+    }
+
     public T GetObject<T>(int x, int y) where T : LevelObject
     {
         if (x < 0 || x >= currentLevel.size.x || y < 0 || y >= currentLevel.size.y)
@@ -393,11 +403,12 @@ public class GameManager : MonoBehaviour
 
         return null;
     }
-
-    public LevelObject GetObject(Vector2Int pos)
+    
+    public T GetObject<T>(Vector2Int pos) where T : LevelObject
     {
-        return GetObject(pos.x, pos.y);
+        return GetObject<T>(pos.x, pos.y);
     }
+    
 
     /// <summary>
     /// Move all objects by one tile
@@ -405,7 +416,7 @@ public class GameManager : MonoBehaviour
     private void MoveAllOneTile(Vector2Int direction)
     {
         void Move(int x, int y)
-            => MoveObjectOneTile(new Vector2Int(x, y), direction);
+            => MoveObjectOneTile(GetObject<Blob>(x, y), new Vector2Int(x, y), direction);
 
         if (direction.x == 0)
         {
@@ -441,51 +452,50 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void MoveObjectOneTile(Vector2Int objectPos, Vector2Int direction)
+    private void MoveObjectOneTile(Blob currentBlob, Vector2Int objectPos, Vector2Int direction)
     {
-        LevelObject current = GetObject(objectPos);
-        if (current == null) return; // No object
+        if (currentBlob == null) return; // No object
+        if (currentBlob.data.eyes == 0) return; // Can't move without eye
 
-        if (current is Blob)
+        Vector2Int target = objectPos + direction;
+
+        if (!GetTile(target)) return; // There is a wall
+
+        Diamond diamond = GetObject<Diamond>(objectPos);
+        if (diamond != null) // I'm on a diamond
         {
-            Vector2Int target = objectPos + direction;
-
-            if (!GetTile(target)) return; // There is a wall
-
-            LevelObject onTarget = GetObject(target);
-            if (onTarget != null) // There is another object
-            {
-                Blob currentBlob = current as Blob;
-
-                if (onTarget is Blob)
-                {
-                    // Fusion!
-                    Blob other = onTarget as Blob;
-
-                    currentBlob.MakeParticlesOnApply(currentBlob.data.color);
-                    currentBlob.MakeParticlesOnApply(other.data.color);
-
-                    currentBlob.AddEyes(other.data.eyes);
-                    currentBlob.SetColor(other.data.color | current.data.color);
-
-                    other.DestroyObject();
-
-                    MoveObject(objectPos, target);
-
-                    TestEnd(currentBlob);
-                    return;
-                }
-                else if (onTarget is End)
-                {
-                    MoveObject(objectPos, target);
-                    TestEnd(currentBlob);
-
-                    return;
-                }
-            }
-
-            MoveObject(objectPos, target); // The object can move successfully
+            currentBlob.AddEyes(-1);
+            currentBlob.MakeParticlesOnApply(currentBlob.data.color);
+            return; // Stop here
         }
+
+        Blob otherBlob = GetObject<Blob>(target);
+        if (otherBlob != null) // Fusion with another blob
+        {
+            currentBlob.MakeParticlesOnApply(currentBlob.data.color);
+            currentBlob.MakeParticlesOnApply(otherBlob.data.color);
+
+            currentBlob.AddEyes(otherBlob.data.eyes);
+            currentBlob.SetColor(otherBlob.data.color | currentBlob.data.color);
+
+            otherBlob.DestroyObject();
+
+            MoveObject(objectPos, target);
+
+            TestEnd(currentBlob); // Retest end after fusion
+            return;
+        }
+
+        End otherEnd = GetObject<End>(target);
+        if (otherEnd != null) // End!
+        {
+            MoveObject(objectPos, target);
+            TestEnd(currentBlob);
+
+            return;
+        }
+
+        MoveObject(objectPos, target); // The object can move successfully
     }
 
     private void TestEnd(Blob blob)

@@ -69,6 +69,10 @@ public class Blob : LevelObject
     public void AddEyes(int count)
     {
         data.eyes += count;
+
+        if (data.eyes < 0)
+            throw new System.Exception("Removed too many eyes!");
+
         eyeVisualsToBeAdded += count;
     }
 
@@ -137,8 +141,17 @@ public class Blob : LevelObject
 
     private void AddEyeVisuals()
     {
-        for (int i = 0; i < eyeVisualsToBeAdded; i++)
-            AddEyeVisual();
+        if (eyeVisualsToBeAdded < 0)
+        {
+            for (int i = 0; i < -eyeVisualsToBeAdded; i++)
+                RemoveEyeVisual();
+        }
+        else
+        {
+            for (int i = 0; i < eyeVisualsToBeAdded; i++)
+                AddEyeVisual();
+        }
+
 
         eyeVisualsToBeAdded = 0;
     }
@@ -150,6 +163,12 @@ public class Blob : LevelObject
         newEye.transform.localPosition = new Vector3(Random.Range(-0.01f, 0.01f), Random.Range(-0.01f, 0.01f)); // Prevent eyes at exact same position
 
         eyes.Add(newEye);
+    }
+
+    private void RemoveEyeVisual()
+    {
+        Destroy(eyes[0]);
+        eyes.RemoveAt(0);
     }
 
     protected override void SetColorVisual(bool immediate = false)
