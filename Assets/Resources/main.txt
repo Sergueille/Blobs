@@ -251,16 +251,75 @@ g blob blue  1
 x end  blue  1
 -
 
-diamond test
-a#.b
-...#
-..!.
+sticky
+#a##
+#.##
+#.##
+z!..
+#.#.
+#...
+-
+a blob green 2
+z end  green 2
+-
+
+eye exchange
 #..z
+a.b#
+.!.#
+#..#
 -
-a blob green 1
+a blob red   2
+b blob blue  1
+z end  blue  2
+-
+
+lonely eye
+#z.b
+a..#
+.!.#
+#..#
+-
+a blob red     2
+b blob blue    1
+z end  magenta 2
+-
+
+get rid of the brown
+###.b
+.#z.#
+a..!.
+##...
+-
+a blob brown 1
 b blob green 2
-z end  blue  1
+z end  green 3
 -
 
+remaining eye
+a.####
+..####
+#!##.c
+#.....
+#b.##y
+-
+a blob blue    1
+b blob green   1
+c blob yellow  1
+y end  yellow  2
+-
 
+i want my eye back
+###.#
+.r..#
+#...b
+#!##!
+.....
+.z...
+###..
+-
+r blob red   1
+b blob brown 1
+z end  red   1
+-
 

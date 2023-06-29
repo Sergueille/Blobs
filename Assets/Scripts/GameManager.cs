@@ -464,7 +464,7 @@ public class GameManager : MonoBehaviour
 
         if (!GetTile(target)) return; // There is a wall
 
-        if (!currentBlob.hasFusedThisMove)
+        if (!currentBlob.hasFusedThisMove && currentBlob.data.color != GameColor.none)
         {
             Diamond diamond = GetObject<Diamond>(objectPos);
             if (diamond != null) // I'm on a diamond
