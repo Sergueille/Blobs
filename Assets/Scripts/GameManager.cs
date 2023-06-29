@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     [NonSerialized] public List<LevelData> currentCollection;
     [NonSerialized] public LevelData currentLevel;
     [NonSerialized] public int currentLevelId;
-    [NonSerialized] public LevelObject[] levelObjects; // Stored in order
+    [NonSerialized] public List<LevelObject> levelObjects;
 
     public Color[] colors;
 
@@ -132,6 +132,12 @@ public class GameManager : MonoBehaviour
                 MoveAllOneTile(direction);
 
             UpdateObjects();
+
+            foreach (LevelObject obj in levelObjects)
+            {
+                if (obj is Blob)
+                    (obj as Blob).hasFusedThisMove = false; // Reset this variable
+            }
 
             // Check if level is finished
             bool finished = true;
@@ -247,8 +253,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        levelObjects = new LevelObject[currentLevel.objects.Length];
-        int i = 0;
+        levelObjects = new List<LevelObject>();
         foreach (LevelObjectData data in currentLevel.objects)
         {
             GameObject prefab = null;
@@ -270,9 +275,7 @@ public class GameManager : MonoBehaviour
 
             LevelObject newObject = Instantiate(prefab).GetComponent<LevelObject>();
             newObject.Init(copiedData);
-            levelObjects[i] = newObject;
-
-            i++;
+            levelObjects.Add(newObject);
         }
     }
 
@@ -416,7 +419,7 @@ public class GameManager : MonoBehaviour
     private void MoveAllOneTile(Vector2Int direction)
     {
         void Move(int x, int y)
-            => MoveObjectOneTile(GetObject<Blob>(x, y), new Vector2Int(x, y), direction);
+            => MoveBlobOneTile(GetObject<Blob>(x, y), new Vector2Int(x, y), direction);
 
         if (direction.x == 0)
         {
@@ -452,7 +455,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void MoveObjectOneTile(Blob currentBlob, Vector2Int objectPos, Vector2Int direction)
+    private void MoveBlobOneTile(Blob currentBlob, Vector2Int objectPos, Vector2Int direction)
     {
         if (currentBlob == null) return; // No object
         if (currentBlob.data.eyes == 0) return; // Can't move without eye
@@ -461,13 +464,34 @@ public class GameManager : MonoBehaviour
 
         if (!GetTile(target)) return; // There is a wall
 
-        Diamond diamond = GetObject<Diamond>(objectPos);
-        if (diamond != null) // I'm on a diamond
+        if (!currentBlob.hasFusedThisMove)
         {
-            currentBlob.AddEyes(-1);
-            currentBlob.MakeParticlesOnApply(currentBlob.data.color);
-            return; // Stop here
+            Diamond diamond = GetObject<Diamond>(objectPos);
+            if (diamond != null) // I'm on a diamond
+            {
+                if (!currentBlob.stoppedByDiamond)
+                {
+                    currentBlob.AddEyes(-1);
+                    currentBlob.MakeParticlesOnApply(currentBlob.data.color);
+                    currentBlob.stoppedByDiamond = true;
+
+                    Blob newBlob = Instantiate(blobPrefab).GetComponent<Blob>();
+                    newBlob.Init(new LevelObjectData{
+                        position = objectPos,
+                        color = GameColor.none,
+                        eyes = 1,
+                        type = ObjectType.blob
+                    });
+                    levelObjects.Add(newBlob);
+
+                    newBlob.Move(target);
+                }
+                
+                return; // Stop here
+            }
         }
+
+        currentBlob.stoppedByDiamond = false;
 
         Blob otherBlob = GetObject<Blob>(target);
         if (otherBlob != null) // Fusion with another blob
@@ -479,8 +503,8 @@ public class GameManager : MonoBehaviour
             currentBlob.SetColor(otherBlob.data.color | currentBlob.data.color);
 
             otherBlob.DestroyObject();
-
-            MoveObject(objectPos, target);
+            currentBlob.hasFusedThisMove = true;
+            currentBlob.Move(target);
 
             TestEnd(currentBlob); // Retest end after fusion
             return;
@@ -489,13 +513,13 @@ public class GameManager : MonoBehaviour
         End otherEnd = GetObject<End>(target);
         if (otherEnd != null) // End!
         {
-            MoveObject(objectPos, target);
+            currentBlob.Move(target);
             TestEnd(currentBlob);
 
             return;
         }
 
-        MoveObject(objectPos, target); // The object can move successfully
+        currentBlob.Move(target);
     }
 
     private void TestEnd(Blob blob)
@@ -522,12 +546,6 @@ public class GameManager : MonoBehaviour
             if (obj != null)
                 obj.ApplyChanges();
         }
-    }
-
-    private void MoveObject(Vector2Int from, Vector2Int to)
-    {
-        LevelObject obj = GetObject(from);
-        obj.Move(to);
     }
 
     public void CreateParticles(GameColor color, Vector2 position)

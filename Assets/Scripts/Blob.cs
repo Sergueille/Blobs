@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Data.Common;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Blob : LevelObject
@@ -24,6 +22,9 @@ public class Blob : LevelObject
     [SerializeField] private LeanTweenType squashTweenType;
 
     [SerializeField] private RandomRange eyesSize;
+
+    [System.NonSerialized] public bool stoppedByDiamond = false;
+    [System.NonSerialized] public bool hasFusedThisMove = false;
 
     private List<Eye> eyes;
     private int eyeVisualsToBeAdded = 0;
@@ -101,7 +102,7 @@ public class Blob : LevelObject
         LeanTween.move(gameObject, newScreenPosition, moveSpeed * distance).setOnComplete(() => {
             oldPosition = data.position;
 
-            if (eyeVisualsToBeAdded > 0)
+            if (eyeVisualsToBeAdded != 0)
                 AddEyeVisuals();
 
             base.ApplyChanges();
@@ -167,7 +168,7 @@ public class Blob : LevelObject
 
     private void RemoveEyeVisual()
     {
-        Destroy(eyes[0]);
+        Destroy(eyes[0].gameObject);
         eyes.RemoveAt(0);
     }
 
