@@ -1,5 +1,15 @@
 using UnityEngine;
 
+public static class Util
+{
+    public static void DestroyChildren(GameObject go)
+    {
+        foreach (Transform child in go.transform) {
+            GameObject.Destroy(child.gameObject);
+        }
+    }
+}
+
 [System.Serializable]
 public class RandomRange
 {

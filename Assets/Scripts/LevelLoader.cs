@@ -73,6 +73,10 @@ public static class LevelLoader
                 else if (IsValidLevelObjectCharacter(c))
                 {
                     objectCountOnMap++;
+
+                    if (objects[c - 'a'] != null)
+                        throw new System.Exception($"In level map '{title}': the character {c} is found twice");
+
                     objects[c - 'a'] = new LevelObjectData{
                         position = new Vector2Int(x, y)
                     };

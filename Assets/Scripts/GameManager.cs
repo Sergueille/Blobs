@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Camera mainCamera;
 
-    [SerializeField] private Sprite[] tileSprites;
+    public Sprite[] tileSprites;
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private GameObject blobPrefab;
     [SerializeField] private GameObject endPrefab;
@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
 
     private List<GameObject> tiles;
 
+    private Vector2Int lastDirection;
     private Vector2 lastMousePosition;
     private bool lastTimeMouseWasDown = false;
 
@@ -69,12 +70,17 @@ public class GameManager : MonoBehaviour
     {
         currentCollection = LevelLoader.ReadMainCollection();
         currentLevelId = 0;
-        MakeLevel(currentCollection[currentLevelId]);
+        MakeLevel(currentLevelId);
         transitionStripes.SetFloat("_Discard", 1);
     }
 
     private void Update()
     {
+        bgStripes.SetFloat("_Shift", Time.time * stripesSpeed + 1);
+        transitionStripes.SetFloat("_Shift", Time.time * stripesSpeed + 1);
+
+        if (currentLevel == null) return;
+
         // Key controls
         Vector2Int direction = Vector2Int.zero;
         if (Input.GetKeyDown(KeyCode.Q)) direction = Vector2Int.left;
@@ -105,12 +111,19 @@ public class GameManager : MonoBehaviour
                 }
             }
 
+            if (direction == lastDirection)
+                direction = Vector2Int.zero;
+
+            if (direction != Vector2Int.zero)
+                lastDirection = direction;
+
             lastMousePosition = Input.mousePosition;
             lastTimeMouseWasDown = true;
         }
         else
         {
             lastTimeMouseWasDown = false;
+            lastDirection = Vector2Int.zero;
         }
 
         if (direction != Vector2Int.zero)
@@ -139,31 +152,33 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            MakeLevelWithTransition(currentLevelId);
+            RestartLevel();
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentLevelId += 1;
             currentLevelId %= currentCollection.Count;
-            MakeLevel(currentCollection[currentLevelId]);
+            MakeLevel(currentLevelId);
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentLevelId += currentCollection.Count - 1;
             currentLevelId %= currentCollection.Count;
-            MakeLevel(currentCollection[currentLevelId]);
+            MakeLevel(currentLevelId);
         }
 
         if (Input.GetKeyDown(KeyCode.P))
         {
             currentCollection = LevelLoader.ReadMainCollection();
             currentLevelId = 0;
-            MakeLevel(currentCollection[currentLevelId]);
+            MakeLevel(currentLevelId);
         }
+    }
 
-        bgStripes.SetFloat("_Shift", Time.time * stripesSpeed + 1);
-        transitionStripes.SetFloat("_Shift", Time.time * stripesSpeed + 1);
+    public void RestartLevel()
+    {
+        MakeLevelWithTransition(currentLevelId);
     }
 
     private void OnLevelComplete()
@@ -176,7 +191,7 @@ public class GameManager : MonoBehaviour
     public void MakeLevelWithTransition(int levelIndex)
     {
         MakeTransition(() => {
-            MakeLevel(currentCollection[levelIndex]);
+            MakeLevel(levelIndex);
         });
     }
 
@@ -197,10 +212,12 @@ public class GameManager : MonoBehaviour
         });
     }
 
-    public void MakeLevel(LevelData level)
+    public void MakeLevel(int levelIndex)
     {
         RemoveCurrentLevel();
-        currentLevel = level;
+
+        currentLevelId = levelIndex;
+        currentLevel = currentCollection[levelIndex];
 
         // Get sizes
         Vector2 safeZoneSize = new Vector2(
@@ -208,58 +225,20 @@ public class GameManager : MonoBehaviour
             mainCamera.orthographicSize * 2 * (1 - screenMargin - screenMargin)
         );
 
-        tileSize = Mathf.Min(safeZoneSize.x / level.size.x, safeZoneSize.y / level.size.y);
+        tileSize = Mathf.Min(safeZoneSize.x / currentLevel.size.x, safeZoneSize.y / currentLevel.size.y);
 
         levelCorner = new Vector2(
-            -tileSize * level.size.x / 2,
-            -tileSize * level.size.y / 2
+            -tileSize * currentLevel.size.x / 2,
+            -tileSize * currentLevel.size.y / 2
         );
 
-        for (int x = 0; x < level.size.x; x++)
+        for (int x = 0; x < currentLevel.size.x; x++)
         {
-            for (int y = 0; y < level.size.y; y++)
+            for (int y = 0; y < currentLevel.size.y; y++)
             {
                 SpriteRenderer tile = Instantiate(tilePrefab, GetScreenPosition(x, y), Quaternion.identity).GetComponent<SpriteRenderer>();
 
-                int spriteIndex;
-                bool current = GetTile(x, y);
-                bool up = GetTile(x, y + 1);
-                bool down = GetTile(x, y - 1);
-                bool right = GetTile(x + 1, y);
-                bool left = GetTile(x - 1, y);
-
-                if (current)
-                {
-                    if      (!up && !down && !left && !right) spriteIndex = 0;
-
-                    else if (up  && !down && !left && !right) spriteIndex = 1;
-                    else if (!up && !down && left  && !right) spriteIndex = 2;
-                    else if (!up && down  && !left && !right) spriteIndex = 3;
-                    else if (!up && !down && !left && right ) spriteIndex = 4;
-
-                    else if (!up && down  && left  && !right) spriteIndex = 5;
-                    else if (!up && down  && !left && right ) spriteIndex = 6;
-                    else if (up  && !down && !left && right ) spriteIndex = 7;
-                    else if (up  && !down && left  && !right) spriteIndex = 8;
-
-                    else spriteIndex = 9;
-                }
-                else
-                {
-                    if      (!up && down  && left  && !right) spriteIndex = 11;
-                    else if (up  && !down && left  && !right) spriteIndex = 12;
-                    else if (up  && !down && !left && right ) spriteIndex = 13;
-                    else if (!up && down  && !left && right ) spriteIndex = 14;
-
-                    else if (!up && down  && left  && right ) spriteIndex = 15;
-                    else if (up  && down  && left  && !right) spriteIndex = 16;
-                    else if (up  && !down && left  && right ) spriteIndex = 17;
-                    else if (up  && down  && !left && right ) spriteIndex = 18;
-
-                    else if (up  && down  && left  && right ) spriteIndex = 19;
-
-                    else spriteIndex = 10;
-                }
+                int spriteIndex = GetSpriteIndexOfTile(currentLevel, x, y);
 
                 tile.sprite = tileSprites[spriteIndex];
                 tile.transform.localScale = Vector3.one * (tileSize + 0.005f);
@@ -268,9 +247,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        levelObjects = new LevelObject[level.objects.Length];
+        levelObjects = new LevelObject[currentLevel.objects.Length];
         int i = 0;
-        foreach (LevelObjectData data in level.objects)
+        foreach (LevelObjectData data in currentLevel.objects)
         {
             GameObject prefab = null;
 
@@ -293,12 +272,64 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public int GetSpriteIndexOfTile(LevelData data, int x, int y)
+    {
+        bool GetTileInData(int x, int y)
+        {
+            if (x < 0 || x >= data.size.x || y < 0 || y >= data.size.y)
+                return false;
+
+            return data.data[x + y * data.size.x];
+        }
+
+        bool current = GetTileInData(x, y);
+        bool up = GetTileInData(x, y + 1);
+        bool down = GetTileInData(x, y - 1);
+        bool right = GetTileInData(x + 1, y);
+        bool left = GetTileInData(x - 1, y);
+
+        if (current)
+        {
+            if      (!up && !down && !left && !right) return 0;
+
+            else if (up  && !down && !left && !right) return 1;
+            else if (!up && !down && left  && !right) return 2;
+            else if (!up && down  && !left && !right) return 3;
+            else if (!up && !down && !left && right ) return 4;
+
+            else if (!up && down  && left  && !right) return 5;
+            else if (!up && down  && !left && right ) return 6;
+            else if (up  && !down && !left && right ) return 7;
+            else if (up  && !down && left  && !right) return 8;
+
+            else return 9;
+        }
+        else
+        {
+            if      (!up && down  && left  && !right) return 11;
+            else if (up  && !down && left  && !right) return 12;
+            else if (up  && !down && !left && right ) return 13;
+            else if (!up && down  && !left && right ) return 14;
+
+            else if (!up && down  && left  && right ) return 15;
+            else if (up  && down  && left  && !right) return 16;
+            else if (up  && !down && left  && right ) return 17;
+            else if (up  && down  && !left && right ) return 18;
+
+            else if (up  && down  && left  && right ) return 19;
+
+            else return 10;
+        }
+    }
+
     public void RemoveCurrentLevel()
     {
         foreach (GameObject go in tiles)
         {
             Destroy(go);
         }
+
+        tiles.Clear();
 
         if (levelObjects != null)
         {
@@ -307,7 +338,11 @@ public class GameManager : MonoBehaviour
                 if (obj != null)
                     Destroy(obj.gameObject);
             }
+
+            levelObjects = null;
         }
+
+        currentLevel = null;
     }
 
     /// <summary>
