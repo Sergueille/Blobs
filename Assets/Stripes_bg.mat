@@ -22,7 +22,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Discard: 0
-    - _Shift: 1.2708037
+    - _Shift: 3.4401734
     - _Size: 0.25
     m_Colors:
     - _ColorA: {r: 0.6, g: 0.6, b: 0.6, a: 1}

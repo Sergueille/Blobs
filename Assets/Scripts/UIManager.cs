@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class UIManager : MonoBehaviour
     public enum Panel {
         ingame,
         gameMenu,
+        mainMenu,
         valueCount
     }
 
@@ -20,6 +22,7 @@ public class UIManager : MonoBehaviour
     public ScrollRect levelListView;
     public RectTransform levelList;
     public GameObject levelPrefab;
+    public TextMeshProUGUI levelCountText;
 
     private void Awake()
     {
@@ -56,13 +59,15 @@ public class UIManager : MonoBehaviour
         currentPanel = panel;
         panels[(int)currentPanel].SetActive(true);
 
-        // Init panel
+        // Init panels
         if (currentPanel == Panel.gameMenu)
         {
             GameManager.i.RemoveCurrentLevel();
             RefreshLevelList();
             LayoutRebuilder.ForceRebuildLayoutImmediate(levelList);
-            levelListView.verticalNormalizedPosition = (float)GameManager.i.currentLevelId / GameManager.i.currentCollection.Count;
+            levelCountText.text = $"{GameManager.i.currentLevelId + 1} / {GameManager.i.currentCollection.Count}";
+            levelListView.verticalNormalizedPosition = 1 - ((float)GameManager.i.currentLevelId / GameManager.i.currentCollection.Count);
+            levelListView.velocity = Vector2.zero;
         }
     }
 
@@ -124,5 +129,30 @@ public class UIManager : MonoBehaviour
             tile.color = color;
             tile.sprite = GameManager.i.tileSprites[spriteIndex];
         }
+    }
+
+    public void GoToMainLevelList()
+    {
+        GameManager.i.currentCollection = LevelLoader.ReadMainCollection();
+        SelectPanel(Panel.gameMenu);
+    }
+
+    public void Continue()
+    {
+        if (!PlayerPrefs.HasKey(GameManager.LAST_LEVEL_ID) || PlayerPrefs.GetInt(GameManager.LAST_LEVEL_ID) < 0)
+        {
+            GameManager.i.currentLevelId = 0;
+            GameManager.i.currentCollection = LevelLoader.ReadMainCollection();
+        }
+        else
+        {
+            GameManager.i.currentLevelId = PlayerPrefs.GetInt(GameManager.LAST_LEVEL_ID);
+            GameManager.i.currentCollection = LevelLoader.ReadMainCollection();
+        }
+
+        GameManager.i.MakeTransition(() => {
+            SelectPanelImmediately(Panel.ingame);
+            GameManager.i.MakeLevel(GameManager.i.currentLevelId);
+        });
     }
 }

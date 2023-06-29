@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public enum ObjectType
@@ -23,6 +21,8 @@ public enum GameColor
 
 public class GameManager : MonoBehaviour
 {
+    public const string LAST_LEVEL_ID = "LastLevelID";
+
     public static GameManager i;
 
     [NonSerialized] public List<LevelData> currentCollection;
@@ -68,9 +68,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        currentCollection = LevelLoader.ReadMainCollection();
-        currentLevelId = 0;
-        MakeLevel(currentLevelId);
         transitionStripes.SetFloat("_Discard", 1);
     }
 
@@ -215,6 +212,8 @@ public class GameManager : MonoBehaviour
     public void MakeLevel(int levelIndex)
     {
         RemoveCurrentLevel();
+
+        PlayerPrefs.SetInt(LAST_LEVEL_ID, levelIndex);
 
         currentLevelId = levelIndex;
         currentLevel = currentCollection[levelIndex];
