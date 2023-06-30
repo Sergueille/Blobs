@@ -138,7 +138,11 @@ public class GameManager : MonoBehaviour
             foreach (LevelObject obj in levelObjects)
             {
                 if (obj is Blob)
+                {
                     (obj as Blob).lastFusionPosition = Vector2Int.one * -1; // Reset this variable
+                    (obj as Blob).stoppedByDiamond = true; // Set this to true to prevent loosing an eye on movement start
+                }
+
             }
 
             // Check if level is finished
@@ -480,12 +484,12 @@ public class GameManager : MonoBehaviour
 
         if (!GetTile(target)) return; // There is a wall
 
-        if (currentBlob.lastFusionPosition != objectPos && currentBlob.data.color != GameColor.none)
+        if (currentBlob.lastFusionPosition != objectPos && currentBlob.data.color != GameColor.none) // Ignore diamond if i'm an eye alone or if i am fusing
         {
             Diamond diamond = GetObject<Diamond>(objectPos);
             if (diamond != null) // I'm on a diamond
             {
-                if (!currentBlob.stoppedByDiamond)
+                if (!currentBlob.stoppedByDiamond) // If i am not already stopped (to prevent loosing many eyes)
                 {
                     currentBlob.AddEyes(-1);
                     currentBlob.MakeParticlesOnApply(currentBlob.data.color);

@@ -286,17 +286,6 @@ b blob blue    1
 z end  magenta 2
 -
 
-get rid of the brown
-###.b
-.#z.#
-a..!.
-##...
--
-a blob brown 1
-b blob green 2
-z end  green 3
--
-
 remaining eye
 a.####
 ..####
@@ -310,7 +299,18 @@ c blob yellow  1
 y end  yellow  2
 -
 
-i want my eye back
+get rid of the brown
+###.b
+.#z.#
+a..!.
+##...
+-
+a blob brown 1
+b blob green 2
+z end  green 3
+-
+
+passing through
 ###.#
 .r..#
 #...b
@@ -324,7 +324,23 @@ b blob brown 1
 z end  red   1
 -
 
-borrowing an eye
+annoying diagonal
+####..
+......
+.###.#
+.##b.#
+.#a.!.
+...!.z
+####y.
+####.#
+-
+a blob red     2
+b blob blue    2
+y end  red     2
+z end  blue    2
+-
+
+i want my eyes back
 ##c..##
 ....y.#
 a.!....
@@ -355,3 +371,19 @@ b blob blue  1
 c blob green 1
 y end  brown 3
 -
+
+fuse them all
+c###
+..##
+#...
+a.b#
+.!..
+.!..
+#y.#
+-
+a blob red      2
+b blob green    2
+c blob blue     1
+y end  brown    3
+-
+
