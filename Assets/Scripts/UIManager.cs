@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Packages.Rider.Editor.UnitTesting;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,18 +13,27 @@ public class UIManager : MonoBehaviour
         ingame,
         gameMenu,
         mainMenu,
+        collectionList,
         valueCount
     }
 
     public static UIManager i;
 
     public GameObject[] panels;
-    public Panel currentPanel;
+    [NonSerialized] public Panel currentPanel;
 
     public ScrollRect levelListView;
     public RectTransform levelList;
     public GameObject levelPrefab;
     public TextMeshProUGUI levelCountText;
+
+    public TextMeshProUGUI collectionsPathText;
+    public GameObject collectionPrefab;
+    public GameObject noCollectionPrefab;
+    public RectTransform collectionList;
+
+    public GameObject errorMessageParent;
+    public TextMeshProUGUI errorMessageText;
 
     private void Awake()
     {
@@ -31,6 +42,16 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        if (!PlayerPrefs.HasKey(GameManager.MAIN_COLLECTION)) // Do not show menu on first time
+        {
+            currentPanel = Panel.ingame;
+            Continue();
+        }
+        else
+        {
+            currentPanel = Panel.mainMenu;
+        }
+
         for (int i = 0; i < (int)Panel.valueCount; i++)
         {
             if (i == (int)currentPanel)
@@ -65,9 +86,33 @@ public class UIManager : MonoBehaviour
             GameManager.i.RemoveCurrentLevel();
             RefreshLevelList();
             LayoutRebuilder.ForceRebuildLayoutImmediate(levelList);
-            levelCountText.text = $"{GameManager.i.currentLevelId + 1} / {GameManager.i.currentCollection.Count}";
-            levelListView.verticalNormalizedPosition = 1 - ((float)GameManager.i.currentLevelId / GameManager.i.currentCollection.Count);
+            levelCountText.text = $"{GameManager.i.currentLevelId + 1} / {GameManager.i.currentCollection.levels.Count}";
+            levelListView.verticalNormalizedPosition = 1 - ((float)GameManager.i.currentLevelId / GameManager.i.currentCollection.levels.Count);
             levelListView.velocity = Vector2.zero;
+        }
+        else if (currentPanel == Panel.collectionList)
+        {
+            collectionsPathText.text = Application.persistentDataPath;
+
+            Util.DestroyChildren(collectionList.gameObject);
+            string[] fileNames = Directory.GetFiles(Application.persistentDataPath);
+
+            if (fileNames.Length == 0)
+            {
+                Instantiate(noCollectionPrefab, collectionList);
+            }
+
+            foreach (string fullPath in fileNames)
+            {
+                string fileName = fullPath.Split('\\', '/')[^1];
+                string fileNameWithoutExtension = fileName.Split('.')[0];
+
+                GameObject collUI = Instantiate(collectionPrefab, collectionList);
+                TextMeshProUGUI text = collUI.GetComponentInChildren<TextMeshProUGUI>();
+                text.text = fileName;
+                Button btn = collUI.GetComponentInChildren<Button>();
+                btn.onClick.AddListener(() => LoadCollectionFromFile(fileNameWithoutExtension));
+            }
         }
     }
 
@@ -75,10 +120,10 @@ public class UIManager : MonoBehaviour
     {
         Util.DestroyChildren(levelList.gameObject);
 
-        for (int i = 0; i < GameManager.i.currentCollection.Count; i++)
+        for (int i = 0; i < GameManager.i.currentCollection.levels.Count; i++)
         {
             LevelUI ui = Instantiate(levelPrefab, levelList).GetComponent<LevelUI>();
-            ui.Init(GameManager.i.currentCollection[i], i);
+            ui.Init(GameManager.i.currentCollection.levels[i], i);
         }
     }
 
@@ -133,26 +178,44 @@ public class UIManager : MonoBehaviour
 
     public void GoToMainLevelList()
     {
-        GameManager.i.currentCollection = LevelLoader.ReadMainCollection();
+        GameManager.i.LoadCollection(LevelLoader.ReadMainCollection());
         SelectPanel(Panel.gameMenu);
     }
 
     public void Continue()
     {
-        if (!PlayerPrefs.HasKey(GameManager.LAST_LEVEL_ID) || PlayerPrefs.GetInt(GameManager.LAST_LEVEL_ID) < 0)
+        if (PlayerPrefs.HasKey(GameManager.MAIN_COLLECTION))
         {
-            GameManager.i.currentLevelId = 0;
-            GameManager.i.currentCollection = LevelLoader.ReadMainCollection();
+            if (PlayerPrefs.GetInt(GameManager.MAIN_COLLECTION) > 0)
+                GameManager.i.LoadCollection(LevelLoader.ReadMainCollection());
+            else
+                GameManager.i.LoadCollection(LevelLoader.ReadCollectionFromFile(PlayerPrefs.GetString(GameManager.COLLECTION_NAME)));
         }
         else
         {
-            GameManager.i.currentLevelId = PlayerPrefs.GetInt(GameManager.LAST_LEVEL_ID);
-            GameManager.i.currentCollection = LevelLoader.ReadMainCollection();
+            GameManager.i.LoadCollection(LevelLoader.ReadMainCollection());
         }
 
         GameManager.i.MakeTransition(() => {
             SelectPanelImmediately(Panel.ingame);
             GameManager.i.MakeLevel(GameManager.i.currentLevelId);
         });
+    }
+
+    public void LoadCollectionFromFile(string fileName)
+    {
+        GameManager.i.LoadCollection(LevelLoader.ReadCollectionFromFile(fileName));
+        SelectPanel(Panel.gameMenu);
+    }
+
+    public void ShowErrorMessage(string content)
+    {
+        errorMessageParent.SetActive(true);
+        errorMessageText.text = content;
+    }
+
+    public void HideErrorMassage()
+    {
+        errorMessageParent.SetActive(false);
     }
 }

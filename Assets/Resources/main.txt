@@ -1,5 +1,6 @@
-
-
+Main collection
+<description>
+-
 
 first level
 a##b.
@@ -323,3 +324,34 @@ b blob brown 1
 z end  red   1
 -
 
+borrowing an eye
+##c..##
+....y.#
+a.!....
+#......
+##.#...
+##.####
+#d.b###
+#..####
+
+-
+a blob blue    1
+b blob green   1
+c blob red     2
+d blob red     1
+y end  yellow  3
+-
+
+two in a row
+.a.#c
+#....
+#!#b#
+#!###
+#..##
+#.y##
+-
+a blob red   1
+b blob blue  1
+c blob green 1
+y end  brown 3
+-

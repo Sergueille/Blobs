@@ -24,7 +24,7 @@ public class Blob : LevelObject
     [SerializeField] private RandomRange eyesSize;
 
     [System.NonSerialized] public bool stoppedByDiamond = false;
-    [System.NonSerialized] public bool hasFusedThisMove = false;
+    [System.NonSerialized] public Vector2Int lastFusionPosition = Vector2Int.one * -1;
 
     private List<Eye> eyes;
     private int eyeVisualsToBeAdded = 0;

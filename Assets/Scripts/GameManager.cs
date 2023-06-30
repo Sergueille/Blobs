@@ -21,11 +21,13 @@ public enum GameColor
 
 public class GameManager : MonoBehaviour
 {
-    public const string LAST_LEVEL_ID = "LastLevelID";
+    public const string LEVEL_COMPLETED_ON_COLLECTION = "LevelsCompletedOnCollection";
+    public const string MAIN_COLLECTION = "MainCollection";
+    public const string COLLECTION_NAME = "CollectionName";
 
     public static GameManager i;
 
-    [NonSerialized] public List<LevelData> currentCollection;
+    [NonSerialized] public LevelCollection currentCollection;
     [NonSerialized] public LevelData currentLevel;
     [NonSerialized] public int currentLevelId;
     [NonSerialized] public List<LevelObject> levelObjects;
@@ -136,7 +138,7 @@ public class GameManager : MonoBehaviour
             foreach (LevelObject obj in levelObjects)
             {
                 if (obj is Blob)
-                    (obj as Blob).hasFusedThisMove = false; // Reset this variable
+                    (obj as Blob).lastFusionPosition = Vector2Int.one * -1; // Reset this variable
             }
 
             // Check if level is finished
@@ -162,13 +164,13 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentLevelId += 1;
-            currentLevelId %= currentCollection.Count;
+            currentLevelId %= currentCollection.levels.Count;
             MakeLevel(currentLevelId);
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            currentLevelId += currentCollection.Count - 1;
-            currentLevelId %= currentCollection.Count;
+            currentLevelId += currentCollection.levels.Count - 1;
+            currentLevelId %= currentCollection.levels.Count;
             MakeLevel(currentLevelId);
         }
 
@@ -180,6 +182,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void LoadCollection(LevelCollection collection)
+    {
+        currentCollection = collection;
+
+        string keyName = LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName;
+
+        if (PlayerPrefs.HasKey(keyName))
+            currentLevelId = PlayerPrefs.GetInt(keyName);
+        else
+            currentLevelId = 0;
+    }
+
     public void RestartLevel()
     {
         MakeLevelWithTransition(currentLevelId);
@@ -188,7 +202,7 @@ public class GameManager : MonoBehaviour
     private void OnLevelComplete()
     {
         currentLevelId += 1;
-        currentLevelId %= currentCollection.Count;
+        currentLevelId %= currentCollection.levels.Count;
         MakeLevelWithTransition(currentLevelId);
     }
 
@@ -220,10 +234,12 @@ public class GameManager : MonoBehaviour
     {
         RemoveCurrentLevel();
 
-        PlayerPrefs.SetInt(LAST_LEVEL_ID, levelIndex);
+        PlayerPrefs.SetInt(LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName, levelIndex);
+        PlayerPrefs.SetInt(MAIN_COLLECTION, currentCollection.isMainCollection ? 1 : 0);
+        PlayerPrefs.SetString(COLLECTION_NAME, currentCollection.fileName);
 
         currentLevelId = levelIndex;
-        currentLevel = currentCollection[levelIndex];
+        currentLevel = currentCollection.levels[levelIndex];
 
         // Get sizes
         Vector2 safeZoneSize = new Vector2(
@@ -464,7 +480,7 @@ public class GameManager : MonoBehaviour
 
         if (!GetTile(target)) return; // There is a wall
 
-        if (!currentBlob.hasFusedThisMove && currentBlob.data.color != GameColor.none)
+        if (currentBlob.lastFusionPosition != objectPos && currentBlob.data.color != GameColor.none)
         {
             Diamond diamond = GetObject<Diamond>(objectPos);
             if (diamond != null) // I'm on a diamond
@@ -484,10 +500,9 @@ public class GameManager : MonoBehaviour
                     });
                     levelObjects.Add(newBlob);
 
-                    newBlob.Move(target);
+                    currentBlob = newBlob; // Simulate the new blob instead of the ont that is stuck
                 }
-                
-                return; // Stop here
+                else return; // Stop here
             }
         }
 
@@ -503,7 +518,7 @@ public class GameManager : MonoBehaviour
             currentBlob.SetColor(otherBlob.data.color | currentBlob.data.color);
 
             otherBlob.DestroyObject();
-            currentBlob.hasFusedThisMove = true;
+            currentBlob.lastFusionPosition = target;
             currentBlob.Move(target);
 
             TestEnd(currentBlob); // Retest end after fusion
@@ -558,6 +573,15 @@ public class GameManager : MonoBehaviour
         );
         ps.Play(color);
     }
+}
+
+public class LevelCollection
+{
+    public List<LevelData> levels;
+    public string name;
+    public string fileName;
+    public string info;
+    public bool isMainCollection;
 }
 
 public class LevelData

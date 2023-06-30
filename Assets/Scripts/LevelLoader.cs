@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using TMPro;
+using System.IO;
 using UnityEngine;
 
 public static class LevelLoader
@@ -7,23 +7,77 @@ public static class LevelLoader
     private static string currentText;
     private static int textPosition;
 
-    public static List<LevelData> ReadMainCollection()
+    public static LevelCollection ReadMainCollection()
     {
         TextAsset file = Resources.Load<TextAsset>("main");
         currentText = file.text;
         textPosition = 0;
-        return ReadCollectionText();
+        LevelCollection res = ReadCollectionText();
+        res.isMainCollection = true;
+        res.fileName = "_MAIN";
+        return res;
     }
 
-    private static List<LevelData> ReadCollectionText()
+    public static LevelCollection ReadCollectionFromFile(string filename)
     {
-        List<LevelData> res = new List<LevelData>();
+        string fileText;
+
+        try {
+            fileText = File.ReadAllText(Application.persistentDataPath + "/" + filename + ".txt");
+        }
+        catch (System.Exception e) {
+            UIManager.i.ShowErrorMessage($"The game couldn't read the level file!\n{e.Message}");
+            throw;
+        }
+
+        currentText = fileText;
+        textPosition = 0;
+
+        LevelCollection res;
+        try {
+            res = ReadCollectionText();
+        }
+        catch (System.Exception e) {
+            UIManager.i.ShowErrorMessage($"There is an error in the level file!\n{e.Message}");
+            throw;
+        }
+
+        res.isMainCollection = false;
+        res.fileName = filename;
+        return res;
+    }
+
+    private static LevelCollection ReadCollectionText()
+    {
+        LevelCollection res = ReadCollectionInfo();
+
+        res.levels = new List<LevelData>();
 
         while (true)
         {
             if (IsEndOfFile()) break;
-            res.Add(ReadLevel());
+            res.levels.Add(ReadLevel());
         }
+
+        return res;
+    }
+
+    private static LevelCollection ReadCollectionInfo()
+    {
+        LevelCollection res = new LevelCollection();
+        res.isMainCollection = false;
+
+        res.name = ReadLine();
+        if (res.name[0] == '-')
+            throw new System.Exception("In header: Expected the collection title, got '-'");
+
+        res.info = ReadLine();
+        if (res.name[0] == '-')
+            throw new System.Exception("In header: Expected info line, got '-'");
+
+        char c = ReadChar();
+        if (c != '-')
+            throw new System.Exception($"At the end of the header, expected '-', got {c}");
 
         return res;
     }
