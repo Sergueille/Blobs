@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Packages.Rider.Editor.UnitTesting;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +13,8 @@ public class UIManager : MonoBehaviour
         gameMenu,
         mainMenu,
         collectionList,
+        settings,
+        resetConfirmation,
         valueCount
     }
 
@@ -217,5 +218,11 @@ public class UIManager : MonoBehaviour
     public void HideErrorMassage()
     {
         errorMessageParent.SetActive(false);
+    }
+
+    public void ResetAll()
+    {
+        PlayerPrefs.DeleteAll();
+        Application.Quit();
     }
 }

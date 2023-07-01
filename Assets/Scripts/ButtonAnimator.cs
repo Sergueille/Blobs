@@ -29,6 +29,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     {
         LeanTween.cancel(img.gameObject);
         LeanTween.scale(img.gameObject, Vector3.one, bounceDuration).setEaseOutElastic();
+        GameManager.i.PlayClickSound();
     }
 
     public void OnPointerDown(PointerEventData eventData)

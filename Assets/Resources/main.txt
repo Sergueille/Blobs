@@ -223,9 +223,9 @@ z end  red   3
 
 surrounded
 #.a..#
-.....#
+z....#
 b#x#c#
-z#.#.#
+.#.#.#
 ..d...
 #....#
 -
@@ -253,15 +253,26 @@ x end  blue  1
 -
 
 sticky
-#a##
-#.##
-#.##
-z!..
-#.#.
-#...
+##a##
+##.##
+##.##
+z.!..
+##.#.
+##...
 -
-a blob green 2
-z end  green 2
+a blob green 1
+z end  green 1
+-
+
+blocked path
+a###
+....
+!##.
+.#..
+z..#
+-
+a blob blue 2
+z end  blue 2
 -
 
 eye exchange
@@ -294,7 +305,7 @@ a.####
 #b.##y
 -
 a blob blue    1
-b blob green   1
+b blob blue    1
 c blob yellow  1
 y end  yellow  2
 -
@@ -387,3 +398,34 @@ c blob blue     1
 y end  brown    3
 -
 
+
+one at a time
+##..kz
+###.##
+..a!.#
+.#....
+###..c
+###.##
+##b.##
+-
+a blob yellow 1
+b blob yellow 1
+c blob yellow 1
+k blob blue   1
+z end  blue   4
+-
+
+don't go too far
+!######
+a.#####
+#.z####
+..!.#.#
+##..b.#
+##....#
+####...
+######!
+-
+a blob red 1
+b blob red 1
+z end  red 2
+-

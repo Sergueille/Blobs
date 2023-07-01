@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum ObjectType
 {
@@ -24,6 +25,9 @@ public class GameManager : MonoBehaviour
     public const string LEVEL_COMPLETED_ON_COLLECTION = "LevelsCompletedOnCollection";
     public const string MAIN_COLLECTION = "MainCollection";
     public const string COLLECTION_NAME = "CollectionName";
+
+    public const string SLIDE_SENSITIVITY = "SlideSensitivity";
+    public const string GLOBAL_VOLUME = "GlobalVolume";
 
     public static GameManager i;
 
@@ -54,6 +58,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float transitionDuration;
 
     [SerializeField] private float slideSensitivity;
+    [SerializeField] private float globalVolume = 1;
+
+    [SerializeField] private AudioClip[] smallBlobSounds;
+    [SerializeField] private AudioClip[] bigBlobSounds;
+    [SerializeField] private float smallBlobSoundsVolume;
+    [SerializeField] private float bigBlobSoundsVolume;
+    [SerializeField] private AudioClip clickSound;
+    [SerializeField] private float clickSoundVolume;
+    [SerializeField] private RandomRange clickSoundPitch;
+    [SerializeField] private AudioClip rewindSound;
 
     public GameObject particlesPrefab;
 
@@ -62,6 +76,14 @@ public class GameManager : MonoBehaviour
     private Vector2Int lastDirection;
     private Vector2 lastMousePosition;
     private bool lastTimeMouseWasDown = false;
+
+    private bool playSmallBlobSoundOnThisMove = false;
+    private bool playBigBlobSoundOnThisMove = false;
+
+    [SerializeField] private Slider slideSensitivitySlider;
+    [SerializeField] private Slider globalVolumeSlider;
+
+    private bool levelComplete = false; // Used to prevent submit moves during transition and beak things
 
     private void Awake()
     {
@@ -72,6 +94,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         transitionStripes.SetFloat("_Discard", 1);
+
+        UpdateSettings();
     }
 
     private void Update()
@@ -128,12 +152,26 @@ public class GameManager : MonoBehaviour
 
         if (direction != Vector2Int.zero)
         {
+            playSmallBlobSoundOnThisMove = false;
+            playBigBlobSoundOnThisMove = false;
+
             int count = direction.y == 0 ? currentLevel.size.x : currentLevel.size.y;
 
             for (int i = 0; i < count; i++)
                 MoveAllOneTile(direction);
 
             UpdateObjects();
+
+            if (playBigBlobSoundOnThisMove)
+            {
+                AudioClip clip = bigBlobSounds[UnityEngine.Random.Range(0, bigBlobSounds.Length)];
+                AudioSource.PlayClipAtPoint(clip, mainCamera.transform.position, globalVolume * bigBlobSoundsVolume);
+            }
+            else if (playSmallBlobSoundOnThisMove)
+            {
+                AudioClip clip = smallBlobSounds[UnityEngine.Random.Range(0, smallBlobSounds.Length)];
+                AudioSource.PlayClipAtPoint(clip, mainCamera.transform.position, globalVolume * smallBlobSoundsVolume);
+            }
 
             foreach (LevelObject obj in levelObjects)
             {
@@ -142,7 +180,6 @@ public class GameManager : MonoBehaviour
                     (obj as Blob).lastFusionPosition = Vector2Int.one * -1; // Reset this variable
                     (obj as Blob).stoppedByDiamond = true; // Set this to true to prevent loosing an eye on movement start
                 }
-
             }
 
             // Check if level is finished
@@ -200,11 +237,16 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        AudioSource.PlayClipAtPoint(rewindSound, mainCamera.transform.position, globalVolume);
         MakeLevelWithTransition(currentLevelId);
     }
 
     private void OnLevelComplete()
     {
+        if (levelComplete) return;
+
+        levelComplete = true;
+
         currentLevelId += 1;
         currentLevelId %= currentCollection.levels.Count;
         MakeLevelWithTransition(currentLevelId);
@@ -237,6 +279,8 @@ public class GameManager : MonoBehaviour
     public void MakeLevel(int levelIndex)
     {
         RemoveCurrentLevel();
+
+        levelComplete = false;
 
         PlayerPrefs.SetInt(LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName, levelIndex);
         PlayerPrefs.SetInt(MAIN_COLLECTION, currentCollection.isMainCollection ? 1 : 0);
@@ -495,6 +539,8 @@ public class GameManager : MonoBehaviour
                     currentBlob.MakeParticlesOnApply(currentBlob.data.color);
                     currentBlob.stoppedByDiamond = true;
 
+                    playBigBlobSoundOnThisMove = true;
+
                     Blob newBlob = Instantiate(blobPrefab).GetComponent<Blob>();
                     newBlob.Init(new LevelObjectData{
                         position = objectPos,
@@ -525,6 +571,8 @@ public class GameManager : MonoBehaviour
             currentBlob.lastFusionPosition = target;
             currentBlob.Move(target);
 
+            playBigBlobSoundOnThisMove = true;
+
             TestEnd(currentBlob); // Retest end after fusion
             return;
         }
@@ -539,6 +587,9 @@ public class GameManager : MonoBehaviour
         }
 
         currentBlob.Move(target);
+
+        // I'm moving, so I will stop, so play small sound
+        playSmallBlobSoundOnThisMove = true;
     }
 
     private void TestEnd(Blob blob)
@@ -550,6 +601,7 @@ public class GameManager : MonoBehaviour
         {
             blob.MakeParticlesOnApply(end.data.color);
             blob.MakeParticlesOnApply(end.data.color); // Twice for more particles!
+            playBigBlobSoundOnThisMove = true;
             end.DestroyObject();
             blob.DestroyObject();
         }
@@ -576,6 +628,52 @@ public class GameManager : MonoBehaviour
             -5
         );
         ps.Play(color);
+    }
+
+    public void UpdateSettings()
+    {
+        globalVolume = GetSetting(GLOBAL_VOLUME, 1);
+        globalVolumeSlider.value = globalVolume;
+
+        slideSensitivity = GetSetting(SLIDE_SENSITIVITY, 1);
+        slideSensitivitySlider.value = slideSensitivity;
+    }
+
+    public float GetSetting(string settingName, float defaultValue)
+    {
+        if (PlayerPrefs.HasKey(settingName))
+        {
+            return PlayerPrefs.GetFloat(settingName);
+        }
+        else return defaultValue;
+    }
+
+    public void SetGlobalVolume(float volume)
+    {
+        PlayerPrefs.SetFloat(GLOBAL_VOLUME, volume);
+        UpdateSettings();
+    }
+
+    public void SetSlideSensitivity(float val)
+    {
+        PlayerPrefs.SetFloat(SLIDE_SENSITIVITY, val);
+        UpdateSettings();
+    }
+
+    public void PlayClickSound()
+    {
+        AudioSource source = new GameObject().AddComponent<AudioSource>();
+        source.clip = clickSound;
+        source.volume = clickSoundVolume * globalVolume;
+        source.maxDistance = 200;
+        source.minDistance = 200;
+
+        float pitch = clickSoundPitch.GetRandom();
+
+        source.pitch = pitch;
+        source.loop = false;
+        source.Play();
+        Destroy(source.gameObject, clickSound.length / pitch + 1); // Delay to make sure
     }
 }
 
