@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,7 +56,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Material bgStripes;
     [SerializeField] private Material transitionStripes;
     [SerializeField] private float stripesSpeed;
-    [SerializeField] private float transitionDuration;
+    public float transitionDuration;
 
     [SerializeField] private float slideSensitivity;
     [SerializeField] private float globalVolume = 1;
@@ -84,6 +85,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Slider globalVolumeSlider;
 
     private bool levelComplete = false; // Used to prevent submit moves during transition and beak things
+
+    
+    [SerializeField] private float levelCompleteDuration;
+    [SerializeField] private int levelCompleteParticleCount;
+    [SerializeField] private float levelCompleteParticlesScale = 1.7f;
 
     private void Awake()
     {
@@ -245,7 +251,24 @@ public class GameManager : MonoBehaviour
     {
         if (levelComplete) return;
 
+        StartCoroutine(OnLevelCompleteCoroutine());
+    }
+
+    private IEnumerator OnLevelCompleteCoroutine()
+    {
         levelComplete = true;
+
+        for (int i = 0; i < levelCompleteParticleCount; i++)
+        {
+            Vector2 randomPos = new Vector2(
+                UnityEngine.Random.Range(-mainCamera.orthographicSize, mainCamera.orthographicSize) * Screen.width / Screen.height,
+                UnityEngine.Random.Range(-mainCamera.orthographicSize, mainCamera.orthographicSize)
+            );
+
+            CreateParticles((GameColor)UnityEngine.Random.Range((int)GameColor.red, (int)GameColor.brown + 1), randomPos, levelCompleteParticlesScale);
+        
+            yield return new WaitForSeconds(levelCompleteDuration / levelCompleteParticleCount);
+        }
 
         currentLevelId += 1;
         currentLevelId %= currentCollection.levels.Count;
@@ -288,6 +311,8 @@ public class GameManager : MonoBehaviour
 
         currentLevelId = levelIndex;
         currentLevel = currentCollection.levels[levelIndex];
+
+        UIManager.i.ShowLevelTitle();
 
         // Get sizes
         Vector2 safeZoneSize = new Vector2(
@@ -619,7 +644,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CreateParticles(GameColor color, Vector2 position)
+    public void CreateParticles(GameColor color, Vector2 position, float scale = 1)
     {
         ColoredParticleSystem ps = Instantiate(particlesPrefab, position, Quaternion.identity).GetComponent<ColoredParticleSystem>();
         ps.transform.position = new Vector3(
@@ -627,6 +652,7 @@ public class GameManager : MonoBehaviour
             ps.transform.position.y,
             -5
         );
+        ps.transform.localScale = Vector3.one * scale;
         ps.Play(color);
     }
 

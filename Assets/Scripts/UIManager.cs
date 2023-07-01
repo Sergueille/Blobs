@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
@@ -36,6 +37,11 @@ public class UIManager : MonoBehaviour
     public GameObject errorMessageParent;
     public TextMeshProUGUI errorMessageText;
 
+    public TextMeshProUGUI levelTitle;
+    public float levelTitleDuration;
+    public float levelTitleTransitionDuration;
+    public float levelTitleScreenMargin;
+
     private void Awake()
     {
         i = this;
@@ -60,6 +66,8 @@ public class UIManager : MonoBehaviour
             else
                 panels[i].SetActive(false);
         }
+
+        levelTitle.transform.position = new Vector3(0, -GameManager.i.mainCamera.orthographicSize - levelTitleScreenMargin, 0);
     }
 
     public void SelectPanel(string panelName)
@@ -225,4 +233,28 @@ public class UIManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         Application.Quit();
     }
+
+    public void ShowLevelTitle()
+    {
+        StartCoroutine(ShowLevelTitleCoroutine());
+    }
+
+    private IEnumerator ShowLevelTitleCoroutine()
+    {
+        float underScreen = -GameManager.i.mainCamera.orthographicSize - levelTitleScreenMargin;
+        float overScreen = -GameManager.i.mainCamera.orthographicSize + levelTitleScreenMargin;
+
+        levelTitle.transform.position = new Vector3(0, underScreen, 0);
+
+        yield return new WaitForSeconds(GameManager.i.transitionDuration);
+
+        levelTitle.text = Util.FirstLetterUppercase(GameManager.i.currentLevel.title);
+        LeanTween.moveY(levelTitle.gameObject, overScreen, levelTitleTransitionDuration)
+            .setEaseOutExpo();
+
+        yield return new WaitForSeconds(levelTitleTransitionDuration + levelTitleDuration);
+
+        LeanTween.moveY(levelTitle.gameObject, underScreen, levelTitleTransitionDuration)
+            .setEaseInExpo();
+    } 
 }

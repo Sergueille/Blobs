@@ -18,7 +18,7 @@ public class LevelUI : MonoBehaviour
         this.data = data;
         this.levelId = levelId;
 
-        string titleText = char.ToUpper(data.title[0]) + data.title.Substring(1, data.title.Length - 1).ToLower();
+        string titleText = Util.FirstLetterUppercase(data.title);
         title.text = titleText;
     }
 
@@ -27,7 +27,6 @@ public class LevelUI : MonoBehaviour
         if (!doneUI && image.position.y > -GameManager.i.mainCamera.orthographicSize - 2 && image.position.y < GameManager.i.mainCamera.orthographicSize + 2)
         {
             UIManager.i.MakeLevelUI(data, image, 30); // Do this only on screen to reduce lag
-            Debug.Log("Done!");
             doneUI = true;
         }
     }

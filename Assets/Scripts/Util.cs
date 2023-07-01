@@ -8,6 +8,11 @@ public static class Util
             GameObject.Destroy(child.gameObject);
         }
     }
+
+    public static string FirstLetterUppercase(string text)
+    {
+        return char.ToUpper(text[0]) + text.Substring(1, text.Length - 1).ToLower();
+    }
 }
 
 [System.Serializable]
