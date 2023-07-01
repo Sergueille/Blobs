@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     [NonSerialized] public Vector2 levelCorner;
     [NonSerialized] public float tileSize;
 
-    [SerializeField] private Camera mainCamera;
+    public Camera mainCamera;
 
     public Sprite[] tileSprites;
     [SerializeField] private GameObject tilePrefab;

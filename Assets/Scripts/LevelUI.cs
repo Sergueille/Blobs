@@ -11,6 +11,8 @@ public class LevelUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private RectTransform image;
 
+    private bool doneUI = false;
+
     public void Init(LevelData data, int levelId)
     {
         this.data = data;
@@ -18,7 +20,16 @@ public class LevelUI : MonoBehaviour
 
         string titleText = char.ToUpper(data.title[0]) + data.title.Substring(1, data.title.Length - 1).ToLower();
         title.text = titleText;
-        UIManager.i.MakeLevelUI(data, image, 30);
+    }
+
+    private void Update()
+    {
+        if (!doneUI && image.position.y > -GameManager.i.mainCamera.orthographicSize - 2 && image.position.y < GameManager.i.mainCamera.orthographicSize + 2)
+        {
+            UIManager.i.MakeLevelUI(data, image, 30); // Do this only on screen to reduce lag
+            Debug.Log("Done!");
+            doneUI = true;
+        }
     }
 
     public void OnClick()
