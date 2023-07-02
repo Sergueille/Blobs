@@ -42,6 +42,10 @@ public class UIManager : MonoBehaviour
     public float levelTitleTransitionDuration;
     public float levelTitleScreenMargin;
 
+    public TextMeshProUGUI versionText;
+
+    private Coroutine levelTitleCoroutine;
+
     private void Awake()
     {
         i = this;
@@ -68,6 +72,8 @@ public class UIManager : MonoBehaviour
         }
 
         levelTitle.transform.position = new Vector3(0, -GameManager.i.mainCamera.orthographicSize - levelTitleScreenMargin, 0);
+
+        versionText.text = Application.version;
     }
 
     public void SelectPanel(string panelName)
@@ -244,7 +250,19 @@ public class UIManager : MonoBehaviour
 
     public void ShowLevelTitle()
     {
-        StartCoroutine(ShowLevelTitleCoroutine());
+        levelTitleCoroutine = StartCoroutine(ShowLevelTitleCoroutine());
+    }
+
+    public void HideLevelTitleImmediately()
+    {
+        if (levelTitleCoroutine != null)
+        {
+            LeanTween.cancel(levelTitle.gameObject);
+            StopCoroutine(levelTitleCoroutine);
+            levelTitle.transform.position = new Vector3(0, -GameManager.i.mainCamera.orthographicSize - levelTitleScreenMargin, 0);
+        }
+
+        levelTitleCoroutine = null;
     }
 
     private IEnumerator ShowLevelTitleCoroutine()

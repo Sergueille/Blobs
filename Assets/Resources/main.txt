@@ -11,7 +11,7 @@ a blob red 1
 b end  red 1
 -
 
-climb the stairs
+stairs
 ..###
 ....#
 ....a

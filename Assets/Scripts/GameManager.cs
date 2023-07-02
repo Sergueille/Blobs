@@ -97,6 +97,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private float forbiddenSlideZoneSize = 0.1f; // Zone on the top and bottom to prevent sliding when the used wants to quit fullscreen (screen units)
 
+    [SerializeField] private SpriteRenderer tutoHand;
+    [SerializeField] private float tutoHandMaxY = -2.3f;
+    [SerializeField] private float tutoHandMinY = -3.7f;
+    [SerializeField] private float tutoHandSlideDuration = 0.5f;
+    [SerializeField] private float tutoHandFadeDuration = 0.2f;
+    private Coroutine handCoroutine;
+
     private void Awake()
     {
         i = this;
@@ -106,6 +113,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         transitionStripes.SetFloat("_Discard", 1);
+
+        tutoHand.gameObject.SetActive(false);
 
         LocalizationManager.Init();
         UpdateSettings();
@@ -161,6 +170,9 @@ public class GameManager : MonoBehaviour
 
             if (direction != Vector2Int.zero)
                 lastDirection = direction;
+
+            if (direction == Vector2Int.down)
+                HideTutorial();
 
             lastMousePosition = Input.mousePosition;
             lastTimeMouseWasDown = true;
@@ -314,6 +326,8 @@ public class GameManager : MonoBehaviour
             transitionStripes.SetFloat("_Discard", actualVal);
         }).setOnComplete(() => {
             transitionStripes.SetFloat("_Discard", 0);
+
+            UIManager.i.HideLevelTitleImmediately();
             callback();
 
             LeanTween.value(0, 1, transitionDuration / 2).setEaseInOutExpo().setOnUpdate(val => {
@@ -336,6 +350,9 @@ public class GameManager : MonoBehaviour
 
         currentLevelId = levelIndex;
         currentLevel = currentCollection.levels[levelIndex];
+
+        if (currentLevelId == 0 && currentCollection.isMainCollection)
+            ShowTutorial();
 
         UIManager.i.ShowLevelTitle();
 
@@ -737,6 +754,40 @@ public class GameManager : MonoBehaviour
         source.loop = false;
         source.Play();
         Destroy(source.gameObject, clickSound.length / pitch + 1); // Delay to make sure
+    }
+
+    public void ShowTutorial()
+    {
+        handCoroutine = StartCoroutine(TutorialCoroutine());
+    }
+
+    public void HideTutorial()
+    {
+        if (handCoroutine == null) return;
+
+        StopCoroutine(handCoroutine);
+        LeanTween.cancel(tutoHand.gameObject);
+        LeanTween.alpha(tutoHand.gameObject, 0, tutoHandFadeDuration);
+        tutoHand.gameObject.SetActive(false);
+        handCoroutine = null;
+    }
+
+    private IEnumerator TutorialCoroutine()
+    {        
+        tutoHand.gameObject.SetActive(true);
+
+        while (true)
+        {
+            tutoHand.color = new Color(1, 1, 1, 0);
+            tutoHand.transform.position = new Vector3(0, tutoHandMaxY, 0);
+
+            LeanTween.alpha(tutoHand.gameObject, 1, tutoHandFadeDuration);
+            yield return new WaitForSeconds(tutoHandFadeDuration);
+            LeanTween.moveY(tutoHand.gameObject, tutoHandMinY, tutoHandSlideDuration).setEaseInOutExpo();
+            yield return new WaitForSeconds(tutoHandSlideDuration);
+            LeanTween.alpha(tutoHand.gameObject, 0, tutoHandFadeDuration);
+            yield return new WaitForSeconds(tutoHandFadeDuration);
+        }
     }
 }
 
