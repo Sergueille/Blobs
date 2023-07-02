@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour
     {
         transitionStripes.SetFloat("_Discard", 1);
 
+        LocalizationManager.Init();
         UpdateSettings();
     }
 
@@ -668,18 +669,27 @@ public class GameManager : MonoBehaviour
 
     public void UpdateSettings()
     {
-        globalVolume = GetSetting(GLOBAL_VOLUME, 1);
+        globalVolume = GetSettingFloat(GLOBAL_VOLUME, 1.0f);
         globalVolumeSlider.value = globalVolume;
 
-        slideSensitivity = GetSetting(SLIDE_SENSITIVITY, 0.7f);
+        slideSensitivity = GetSettingFloat(SLIDE_SENSITIVITY, 0.7f);
         slideSensitivitySlider.value = slideSensitivity;
     }
 
-    public float GetSetting(string settingName, float defaultValue)
+    public float GetSettingFloat(string settingName, float defaultValue)
     {
         if (PlayerPrefs.HasKey(settingName))
         {
             return PlayerPrefs.GetFloat(settingName);
+        }
+        else return defaultValue;
+    }
+
+    public int GetSettingInt(string settingName, int defaultValue)
+    {
+        if (PlayerPrefs.HasKey(settingName))
+        {
+            return PlayerPrefs.GetInt(settingName);
         }
         else return defaultValue;
     }

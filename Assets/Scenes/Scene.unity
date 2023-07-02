@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 102771010}
   - component: {fileID: 102771012}
   - component: {fileID: 102771011}
+  - component: {fileID: 102771013}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -394,7 +395,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Level files are lcated in:'
+  m_text: 'Les fichiers se situent dans:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -471,6 +472,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102771009}
   m_CullTransparentMesh: 1
+--- !u!114 &102771013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102771009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: lvl_dir
 --- !u!1 &158962989
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +496,7 @@ GameObject:
   - component: {fileID: 158962990}
   - component: {fileID: 158962992}
   - component: {fileID: 158962991}
+  - component: {fileID: 158962993}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -529,10 +544,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'All your progess and settings will be erased, but your custom levels files
-    won''t be deleted.
-
-    If you proceed, the application will close.'
+  m_text: "Toute votre progression et vos param\xE8tres seront supprim\xE9s, mais
+    vos fichiers de niveaux seront conserv\xE9s.\nSi vous continuez, le jeu se fermera."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -609,6 +622,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 158962989}
   m_CullTransparentMesh: 1
+--- !u!114 &158962993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158962989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: rst_desc
 --- !u!1001 &186891849
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -740,9 +766,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: level_list_btn
+      objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
-      value: Level list
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
@@ -940,6 +970,7 @@ GameObject:
   - component: {fileID: 320555911}
   - component: {fileID: 320555913}
   - component: {fileID: 320555912}
+  - component: {fileID: 320555914}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -987,7 +1018,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Are you sure?
+  m_text: "\xCAtes-vous s\xFBr?"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1064,6 +1095,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 320555910}
   m_CullTransparentMesh: 1
+--- !u!114 &320555914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320555910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: rst_title
 --- !u!1 &323146695
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,6 +1301,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: rst_yes_btn
+      objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
       value: Ok, delete all
@@ -1286,6 +1334,7 @@ GameObject:
   m_Component:
   - component: {fileID: 396608210}
   - component: {fileID: 396608212}
+  - component: {fileID: 396608213}
   - component: {fileID: 396608211}
   m_Layer: 5
   m_Name: Title
@@ -1334,7 +1383,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Settings
+  m_text: "Param\xE8tres"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1411,6 +1460,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 396608209}
   m_CullTransparentMesh: 1
+--- !u!114 &396608213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 396608209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: set_title
 --- !u!1 &406353664
 GameObject:
   m_ObjectHideFlags: 0
@@ -2159,6 +2221,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: set_erase_btn
+      objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
       value: Erase progression
@@ -2194,6 +2260,7 @@ GameObject:
   - component: {fileID: 669904331}
   - component: {fileID: 669904333}
   - component: {fileID: 669904332}
+  - component: {fileID: 669904334}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2318,6 +2385,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669904330}
   m_CullTransparentMesh: 1
+--- !u!114 &669904334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669904330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: set_volume
 --- !u!1 &728827465
 GameObject:
   m_ObjectHideFlags: 0
@@ -2602,6 +2682,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextButton (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: rst_no_btn
+      objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
       value: No! Don't do anything!
@@ -2783,6 +2867,7 @@ GameObject:
   - component: {fileID: 862795854}
   - component: {fileID: 862795856}
   - component: {fileID: 862795855}
+  - component: {fileID: 862795857}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2830,7 +2915,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Slide sensitivity
+  m_text: "Sensibilit\xE9 au glissement"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2907,6 +2992,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 862795853}
   m_CullTransparentMesh: 1
+--- !u!114 &862795857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862795853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: set_slide
 --- !u!1001 &966762188
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3285,9 +3383,13 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: settings_btn
+      objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
-      value: Settings
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
@@ -4598,9 +4700,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: my_levels_btn
+      objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
-      value: My levels
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
@@ -4657,6 +4763,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1892036456}
   - component: {fileID: 1892036458}
+  - component: {fileID: 1892036459}
   - component: {fileID: 1892036457}
   m_Layer: 5
   m_Name: Title
@@ -4705,7 +4812,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game title
+  m_text: Titre du jeu
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4782,6 +4889,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1892036455}
   m_CullTransparentMesh: 1
+--- !u!114 &1892036459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892036455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: game_title
 --- !u!1 &1968888482
 GameObject:
   m_ObjectHideFlags: 0
@@ -5029,7 +5149,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2235255874832365522, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 700
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 2235255874832365522, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_SizeDelta.y
@@ -5065,7 +5185,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2235255874832365522, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 380
+      value: 430
       objectReference: {fileID: 0}
     - target: {fileID: 2235255874832365522, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5090,6 +5210,10 @@ PrefabInstance:
     - target: {fileID: 2235255876340412481, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
       value: 0.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: lvl_tuto_btn
       objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
@@ -5488,9 +5612,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+      propertyPath: key
+      value: continue_btn
+      objectReference: {fileID: 0}
     - target: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
       propertyPath: m_text
-      value: Continue
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
@@ -5635,7 +5763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201288965546120421, guid: ce65d84389a073a428d2a7aca652f208, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.78947365
+      value: 0.625
       objectReference: {fileID: 0}
     - target: {fileID: 9201288965546120421, guid: ce65d84389a073a428d2a7aca652f208, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5643,7 +5771,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201288965546120421, guid: ce65d84389a073a428d2a7aca652f208, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.78947365
+      value: 0.625
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce65d84389a073a428d2a7aca652f208, type: 3}
