@@ -275,6 +275,17 @@ a blob blue 2
 z end  blue 2
 -
 
+rescue the blue
+#a#b#
+.....
+.!...
+..z.#
+-
+a blob blue   1
+b blob red    1
+z end magenta 2
+-
+
 eye exchange
 #..z
 a.b#
@@ -400,13 +411,13 @@ y end  brown    3
 
 
 one at a time
-##..kz
-###.##
-..a!.#
-.#....
-###..c
-###.##
-##b.##
+#..kz
+##.##
+.a!.#
+#....
+##..c
+##.##
+#b.##
 -
 a blob yellow 1
 b blob yellow 1

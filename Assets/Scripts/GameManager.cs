@@ -76,6 +76,7 @@ public class GameManager : MonoBehaviour
 
     private Vector2Int lastDirection;
     private Vector2 lastMousePosition;
+    private Vector2 slideStartPosition;
     private bool lastTimeMouseWasDown = false;
 
     private bool playSmallBlobSoundOnThisMove = false;
@@ -86,10 +87,11 @@ public class GameManager : MonoBehaviour
 
     private bool levelComplete = false; // Used to prevent submit moves during transition and beak things
 
-    
     [SerializeField] private float levelCompleteDuration;
     [SerializeField] private int levelCompleteParticleCount;
     [SerializeField] private float levelCompleteParticlesScale = 1.7f;
+
+    [SerializeField] private float forbiddenSlideZoneSize = 0.1f; // Zone on the top and bottom to prevent sliding when the used wants to quit fullscreen (screen units)
 
     private void Awake()
     {
@@ -123,22 +125,30 @@ public class GameManager : MonoBehaviour
         {
             if (lastTimeMouseWasDown)
             {
-                Vector2 delta = (Vector2)Input.mousePosition - lastMousePosition;
-                float dist = delta.magnitude / Screen.height;
-
-                if (dist / Time.deltaTime > slideSensitivity)
+                if (slideStartPosition.y < Screen.height * (1 - forbiddenSlideZoneSize)
+                 && slideStartPosition.y > Screen.height * forbiddenSlideZoneSize) // Not in forbidden zone
                 {
-                    if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+                    Vector2 delta = (Vector2)Input.mousePosition - lastMousePosition;
+                    float dist = delta.magnitude / Screen.height;
+
+                    if (dist / Time.deltaTime > slideSensitivity)
                     {
-                        if (delta.x > 0) direction = Vector2Int.right;
-                        else             direction = Vector2Int.left;
-                    }
-                    else
-                    {
-                        if (delta.y > 0) direction = Vector2Int.up;
-                        else             direction = Vector2Int.down;
+                        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+                        {
+                            if (delta.x > 0) direction = Vector2Int.right;
+                            else             direction = Vector2Int.left;
+                        }
+                        else
+                        {
+                            if (delta.y > 0) direction = Vector2Int.up;
+                            else             direction = Vector2Int.down;
+                        }
                     }
                 }
+            }
+            else
+            {
+                slideStartPosition = Input.mousePosition;
             }
 
             if (direction == lastDirection)
@@ -661,7 +671,7 @@ public class GameManager : MonoBehaviour
         globalVolume = GetSetting(GLOBAL_VOLUME, 1);
         globalVolumeSlider.value = globalVolume;
 
-        slideSensitivity = GetSetting(SLIDE_SENSITIVITY, 1);
+        slideSensitivity = GetSetting(SLIDE_SENSITIVITY, 0.7f);
         slideSensitivitySlider.value = slideSensitivity;
     }
 
