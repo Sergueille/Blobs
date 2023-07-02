@@ -15,7 +15,9 @@ public static class LocalizationManager
     }
 
     private static TextAsset file;
+    private static TextAsset levelFile;
     private static Dictionary<string, string> currentDict;
+    private static Dictionary<string, string> levelDict;
 
     public static Language currentLanguage;
 
@@ -25,6 +27,7 @@ public static class LocalizationManager
 
     public static void Init()
     {
+        LoadCSV();
         currentLanguage = (Language)GameManager.i.GetSettingInt(LANGUAGE_KEY, (int)Language.systemLanguage);
     }
 
@@ -52,7 +55,11 @@ public static class LocalizationManager
             };
         }
 
-        currentDict = GetDictionaryValues(langString);
+        if (file == null || levelFile == null)
+            LoadCSV();
+
+        currentDict = GetDictionaryValues(langString, file);
+        levelDict = GetDictionaryValues(langString, levelFile);
     }
 
     public static string GetValue(string key)
@@ -68,20 +75,31 @@ public static class LocalizationManager
         return key;
     }
 
+    public static string GetLevelName(string key)
+    {
+        if (levelDict == null)
+            UpdateLanguage(currentLanguage);
+
+        if (levelDict.ContainsKey(key))
+            return levelDict[key];
+
+        Debug.LogError($"Level title {key} not localized!");
+
+        return key;
+    }
+
     private static void LoadCSV()
 	{
         file = Resources.Load<TextAsset>("localization");
+        levelFile = Resources.Load<TextAsset>("level_localization");
 	}
 
     /// <summary>
     /// Get localization dictionary for one language
     /// </summary>
     /// <param name="attributeId">The id of the language (en, fr)</param>
-    private static Dictionary<string, string> GetDictionaryValues(string attributeId)
+    private static Dictionary<string, string> GetDictionaryValues(string attributeId, TextAsset file)
 	{
-        if (file == null)
-            LoadCSV();
-
         Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
         string[] lines = file.text.Split(lineSeparator);

@@ -248,7 +248,9 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(GameManager.i.transitionDuration);
 
-        levelTitle.text = Util.FirstLetterUppercase(GameManager.i.currentLevel.title);
+        string rawTitle = GameManager.i.currentLevel.title;
+        string localizedTitle = GameManager.i.currentCollection.isMainCollection ? LocalizationManager.GetLevelName(rawTitle) : rawTitle;
+        levelTitle.text = Util.FirstLetterUppercase(localizedTitle);
         LeanTween.moveY(levelTitle.gameObject, overScreen, levelTitleTransitionDuration)
             .setEaseOutExpo();
 

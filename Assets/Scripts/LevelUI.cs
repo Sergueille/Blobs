@@ -18,7 +18,8 @@ public class LevelUI : MonoBehaviour
         this.data = data;
         this.levelId = levelId;
 
-        string titleText = Util.FirstLetterUppercase(data.title);
+        string rawTitle = GameManager.i.currentCollection.isMainCollection ? LocalizationManager.GetLevelName(data.title) : data.title;
+        string titleText = Util.FirstLetterUppercase(rawTitle);
         title.text = titleText;
     }
 
