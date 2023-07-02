@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,7 @@ public enum GameColor
 public class GameManager : MonoBehaviour
 {
     public const string LEVEL_COMPLETED_ON_COLLECTION = "LevelsCompletedOnCollection";
+    public const string LAST_LEVEL_ON_COLLECTION = "LastLevelOnCollection";
     public const string MAIN_COLLECTION = "MainCollection";
     public const string COLLECTION_NAME = "CollectionName";
 
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
     [NonSerialized] public LevelCollection currentCollection;
     [NonSerialized] public LevelData currentLevel;
     [NonSerialized] public int currentLevelId;
+    [NonSerialized] public int levelsCompletedInCollection;
     [NonSerialized] public List<LevelObject> levelObjects;
 
     public Color[] colors;
@@ -84,6 +87,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Slider slideSensitivitySlider;
     [SerializeField] private Slider globalVolumeSlider;
+    [SerializeField] private TMP_Dropdown languageDropdown;
 
     private bool levelComplete = false; // Used to prevent submit moves during transition and beak things
 
@@ -244,12 +248,19 @@ public class GameManager : MonoBehaviour
     {
         currentCollection = collection;
 
-        string keyName = LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName;
+        string completedKey = LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName;
+        string lastKey = LAST_LEVEL_ON_COLLECTION + currentCollection.fileName;
 
-        if (PlayerPrefs.HasKey(keyName))
-            currentLevelId = PlayerPrefs.GetInt(keyName);
+        if (PlayerPrefs.HasKey(completedKey))
+        {
+            currentLevelId = PlayerPrefs.GetInt(lastKey);
+            levelsCompletedInCollection = PlayerPrefs.GetInt(completedKey);
+        }
         else
+        {
             currentLevelId = 0;
+            levelsCompletedInCollection = 0;
+        }
     }
 
     public void RestartLevel()
@@ -268,6 +279,9 @@ public class GameManager : MonoBehaviour
     private IEnumerator OnLevelCompleteCoroutine()
     {
         levelComplete = true;
+
+        levelsCompletedInCollection = Mathf.Max(levelsCompletedInCollection, currentLevelId);
+        PlayerPrefs.SetInt(LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName, levelsCompletedInCollection);
 
         for (int i = 0; i < levelCompleteParticleCount; i++)
         {
@@ -316,7 +330,7 @@ public class GameManager : MonoBehaviour
 
         levelComplete = false;
 
-        PlayerPrefs.SetInt(LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName, levelIndex);
+        PlayerPrefs.SetInt(LAST_LEVEL_ON_COLLECTION + currentCollection.fileName, levelIndex);
         PlayerPrefs.SetInt(MAIN_COLLECTION, currentCollection.isMainCollection ? 1 : 0);
         PlayerPrefs.SetString(COLLECTION_NAME, currentCollection.fileName);
 
@@ -674,6 +688,9 @@ public class GameManager : MonoBehaviour
 
         slideSensitivity = GetSettingFloat(SLIDE_SENSITIVITY, 0.7f);
         slideSensitivitySlider.value = slideSensitivity;
+
+        LocalizationManager.UpdateLanguage((LocalizationManager.Language)GetSettingInt(LocalizationManager.LANGUAGE_KEY, (int)LocalizationManager.Language.systemLanguage));
+        languageDropdown.value = (int)LocalizationManager.currentLanguage;
     }
 
     public float GetSettingFloat(string settingName, float defaultValue)

@@ -286,7 +286,7 @@ b blob red    1
 z end magenta 2
 -
 
-eye exchange
+exchange
 #..z
 a.b#
 .!.#
@@ -360,6 +360,19 @@ a blob red     2
 b blob blue    2
 y end  red     2
 z end  blue    2
+-
+
+reunite the eyes
+za###
+#!#c#
+#....
+#!#..
+#b#..
+-
+a blob red   1
+b blob red   1
+c blob green 1
+z end  red   3
 -
 
 i want my eyes back
@@ -439,4 +452,20 @@ a.#####
 a blob red 1
 b blob red 1
 z end  red 2
+-
+
+obstructed level
+..#a###
+......#
+#.#....
+#..!#..
+#...###
+#!..###
+#!!.###
+#.!.zg#
+##..###
+-
+a blob blue  2
+g blob brown 1
+z end  blue  2
 -

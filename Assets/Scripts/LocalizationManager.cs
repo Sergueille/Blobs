@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class LocalizationManager
 {
-    private const string LANGUAGE_KEY = "Language";
+    public const string LANGUAGE_KEY = "Language";
 
     public enum Language
     {
@@ -34,6 +34,7 @@ public static class LocalizationManager
     public static void UpdateLanguage(Language lang)
     {
         currentLanguage = lang;
+        PlayerPrefs.SetInt(LANGUAGE_KEY, (int)lang);
 
         string langString;
 

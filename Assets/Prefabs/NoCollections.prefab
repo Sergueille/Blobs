@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8168715633349374075}
   - component: {fileID: 8168715633349374073}
   - component: {fileID: 8168715633349374074}
+  - component: {fileID: 5024058563181784487}
   m_Layer: 5
   m_Name: NoCollections
   m_TagString: Untagged
@@ -66,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: No level files found...
+  m_text: lvl_empty
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -135,3 +136,16 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5024058563181784487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8168715633349374076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34fd315f8d63a4e42aecd5923dc775dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: lvl_empty

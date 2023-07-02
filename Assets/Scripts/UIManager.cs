@@ -95,8 +95,11 @@ public class UIManager : MonoBehaviour
             GameManager.i.RemoveCurrentLevel();
             RefreshLevelList();
             LayoutRebuilder.ForceRebuildLayoutImmediate(levelList);
-            levelCountText.text = $"{GameManager.i.currentLevelId + 1} / {GameManager.i.currentCollection.levels.Count}";
-            levelListView.verticalNormalizedPosition = 1 - ((float)GameManager.i.currentLevelId / GameManager.i.currentCollection.levels.Count);
+
+            int levelCount = GameManager.i.currentCollection.levels.Count;
+
+            levelCountText.text = $"{GameManager.i.currentLevelId + 1} / {levelCount}";
+            levelListView.verticalNormalizedPosition = (1 - ((float)GameManager.i.currentLevelId / levelCount)) * (1 - 6 / levelCount);
             levelListView.velocity = Vector2.zero;
         }
         else if (currentPanel == Panel.collectionList)
@@ -232,6 +235,11 @@ public class UIManager : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         Application.Quit();
+    }
+
+    public void SetLanguage(int value)
+    {
+        LocalizationManager.UpdateLanguage((LocalizationManager.Language)value);
     }
 
     public void ShowLevelTitle()
