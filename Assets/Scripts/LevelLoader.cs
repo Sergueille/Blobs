@@ -256,7 +256,7 @@ public static class LevelLoader
             textPosition++;
         }
 
-        if (textPosition == currentText.Length)
+        if (textPosition >= currentText.Length)
             throw new System.Exception("Expected a character, but got to end of file");
 
         textPosition++;

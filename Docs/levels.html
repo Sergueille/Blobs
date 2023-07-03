@@ -16,11 +16,100 @@
     <div class="page">
         <h1>How to make levels?</h1>
         <p>
-            This page will show you how to create your own levels for the game.
+            This page will show you how to create your own levels for the game. I'm too lazy to make a level editor, so you will have to use text files... 
         </p>
         <h2>Creating the level file</h2>
         <p>
-            
+            In the game, click on the <code>my levels</code> button.
+            The directory where the level files are located is shown on the top of the screen.<br>
+            Create a text file in this folder, with extension <code>.txt</code>
+        </p>
+        <h2>File header</h2>
+        <p>
+            At the top of the file, you must include this header:
+            <div class="multiline-code">
+                &#60;Collection name&#62;<br>
+                &#60;Description&#62;<br>
+                -
+            </div> 
+
+            <ul>
+                <li><code>Collection name</code> is the name of the level collection, it can be different than the name of the file</li>
+                <li><code>Description</code> is a short description of the collection (only one line)</li>
+            </ul>
+
+            <div class="warn red">
+                Don't forget the <code>-</code>! This character is the separator.
+            </div>
+        </p>
+        <h2>Adding a level</h2>
+        <p>
+            After the header, you can add as many levels as you want. Here is a level template:
+            <div class="multiline-code">
+                &#60;Level name&#62;<br>
+                ###b<br>
+                #.!.<br>
+                a..#<br>
+                -<br>
+                a blob red 1<br>
+                b end  red 1<br>
+                -<br>
+            </div>
+            <ul>
+                <li><code>Level name</code> is the name of the level that will be shown ingame. It can contains special characters, but not for the first letter.</li>
+                <li>
+                    On the next lines is the level map. Each character represents a tile.
+                    <ul>
+                        <li><code>.</code> is a white tile, where objects can move</li>
+                        <li><code>#</code> is outside the level, where objects cannot move</li>
+                        <li><code>!</code> is a sticky diamond</li>
+                        <li>Characters form <code>a</code> to <code>z</code> are other objects, that should be described under the map</li>
+                    </ul>
+                </li>
+                <li>
+                    After the separator are the object descriptions. Each line represents one object:
+                    <div class="multiline-code">
+                        &#60;Character of the object&#62; &#60;Type&#62; &#60;Color&#62; &#60;Number of eyes&#62;
+                    </div>
+                    <ul>
+                        <li><code>Character of the object</code> is the character used on the map for this object</li>
+                        <li><code>Type</code> is <code>blob</code> or <code>end</code></li>
+                        <li><code>Color</code> is <code>red</code>, <code>blue</code>, <code>green</code>, <code>cyan</code>, <code>magenta</code>, <code>yellow</code> or <code>brown</code> (or <code>none</code> for eyes without blob)</li>
+                        <li><code>Number of eyes</code> is an integer</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="warn yellow">
+                Any additional whitespace or blank lines will be ignored (hopefully, there might be some bugs related to that)
+            </div>
+
+            <div class="warn red">
+                Again, don't forget the <code>-</code>, even if it's the last level!<br>
+                On the last level, you should also add at least one blank line after the last separator
+            </div>
+        </p>
+        <h2>We're finished!</h2>
+        <p>
+            You can now open the level file in the game!
+            The example level given above should look like that:
+            <img src="example.png">
+        </p>
+        <h2>Common errors</h2>
+        <h3>In level map <code>Title</code> at position (<code>x</code>, <code>y</code>): expected a map character, got <code>something</code>.</h3>
+        <p>
+            You may have forgot the <code>-</code> at the end of the map (shame on you), and the game thinks the object descriptions are inside the map, and is very confused.<br>
+            You may also have included a bad character in the map. You can only use <code>.</code>, <code>#</code>, <code>!</code>, or characters between <code>a</code> to <code>z</code>.
+        </p>
+        <h3>In level objects <code>Title</code>: the object <code>something</code> is not present in the map or have been described twice<br>
+        In level objects <code>Title</code>: there are <code>x</code> objects on map, bun only <code>y</code> objects described</h3>
+        <p>
+            An object is described but not in the map, or on the map but not described, or is described twice, or maybe present twice in the map.
+        </p>
+        <h3>Expected a character, but got to end of file</h3>
+        <p>
+            There is a high probability that you forgot the <code>-</code> at the end, you fool!<br>
+            Maybe you also forgot the blank line at the very end of the file.
         </p>
     </div>
 </body>

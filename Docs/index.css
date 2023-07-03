@@ -167,6 +167,8 @@ nav {
 
     border-bottom: 1px solid var(--bg-lll);
     box-shadow: #000 0 0 20px -10px;
+
+    position: relative;
 }
 
 .icon-image {
@@ -177,7 +179,14 @@ nav {
 
     width: 3rem;
     height: 3rem;
-    margin: 20px;
+    margin: 10px;
+
+    position: fixed;
+}
+
+.game-title {
+    position: fixed;
+    left: 4rem;
 }
 
 .page {
@@ -191,6 +200,46 @@ h1 {
 h1, h2 {
     margin: 40px 0 10px 0;
     border-bottom: 1px solid var(--bg-lll);
+}
+
+code {
+    font-family: monospace;
+    background-color: var(--bg-ll);
+    border-radius: 3px;
+    padding: 2px 5px;
+}
+
+.multiline-code {
+    font-family: monospace;
+    background-color: var(--bg-l);
+    border-radius: 5px;
+    padding: 10px;
+    margin: 15px;
+}
+
+.warn {
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid;
+    margin: 15px;
+}
+
+.warn.red {
+    border-color: var(--warn-red);
+}
+
+.warn.yellow {
+    border-color: var(--warn-yellow);
+}
+
+li {
+    margin: 5px 0 10px 0;
+}
+
+img {
+    display: block;
+    height: 20vh;
+    margin: 10px;
 }
 
 /* MEDIA */
@@ -211,6 +260,9 @@ h1, h2 {
         --hover: #444;
         --key: #fff2;
         --red: #c22;
+        
+        --warn-red: #691212;
+        --warn-yellow: #ad8500;
     }
 
     /* Invert image */
@@ -235,6 +287,9 @@ h1, h2 {
         --hover: #00000008;
         --key: #0002;
         --red: #fd2121;
+
+        --warn-red: #ff7272;
+        --warn-yellow: #ffcc5d;
     }
 }
 

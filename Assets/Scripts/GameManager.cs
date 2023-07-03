@@ -328,6 +328,7 @@ public class GameManager : MonoBehaviour
             transitionStripes.SetFloat("_Discard", 0);
 
             UIManager.i.HideLevelTitleImmediately();
+            HideTutorial();
             callback();
 
             LeanTween.value(0, 1, transitionDuration / 2).setEaseInOutExpo().setOnUpdate(val => {
@@ -758,6 +759,8 @@ public class GameManager : MonoBehaviour
 
     public void ShowTutorial()
     {
+        if (handCoroutine != null)
+            StopCoroutine(handCoroutine);
         handCoroutine = StartCoroutine(TutorialCoroutine());
     }
 

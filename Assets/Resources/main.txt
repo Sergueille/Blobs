@@ -286,6 +286,32 @@ b blob red    1
 z end magenta 2
 -
 
+stuck on the wall
+###b
+#.!.
+#...
+a..#
+#..#
+-
+a blob red 1
+b end  red 1
+-
+
+yield to the right
+.#####
+..#...
+#a##..
+#.##b#
+#!....
+#.#...
+#z####
+...###
+-
+a blob magenta 1
+b blob magenta 1
+z end  magenta 2
+-
+
 exchange
 #..z
 a.b#
@@ -330,6 +356,23 @@ a..!.
 a blob brown 1
 b blob green 2
 z end  green 3
+-
+
+the right direction
+#y..##
+##.###
+##.##a
+..!...
+..b##z
+#.####
+#.c###
+##.###
+-
+a blob blue   1
+b blob red    1
+c blob green  1
+y end  yellow 1
+z end  blue   2
 -
 
 passing through
@@ -469,3 +512,4 @@ a blob blue  2
 g blob brown 1
 z end  blue  2
 -
+
