@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public enum ObjectType
 {
-    blob, end, diamond
+    blob, end, diamond, inverter
 }
 
 public enum GameColor
@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject blobPrefab;
     [SerializeField] private GameObject endPrefab;
     [SerializeField] private GameObject diamondPrefab;
+    [SerializeField] private GameObject inverterPrefab;
 
     [SerializeField] private Material bgStripes;
     [SerializeField] private Material transitionStripes;
@@ -402,6 +403,10 @@ public class GameManager : MonoBehaviour
             {
                 prefab = diamondPrefab;
             }
+            else if (data.type == ObjectType.inverter)
+            {
+                prefab = inverterPrefab;
+            }
 
             LevelObjectData copiedData = data.Clone(); 
 
@@ -652,6 +657,15 @@ public class GameManager : MonoBehaviour
             TestEnd(currentBlob);
 
             return;
+        }
+
+        Inverter otherInverter = GetObject<Inverter>(target);
+        if (otherInverter != null && !currentBlob.stoppedByDiamond)
+        {
+            currentBlob.SetColor((GameColor)((int)~currentBlob.data.color & 0b111));
+            currentBlob.MakeParticlesOnApply(currentBlob.data.color);
+
+            playBigBlobSoundOnThisMove = true;
         }
 
         currentBlob.Move(target);

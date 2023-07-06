@@ -3883,6 +3883,7 @@ MonoBehaviour:
   blobPrefab: {fileID: 954094274137628027, guid: f2c580c574424cd4bba4f1d4846488f2, type: 3}
   endPrefab: {fileID: 4925188552510339627, guid: a185ddfbc3e12d94b87dfb0cd7457092, type: 3}
   diamondPrefab: {fileID: 8848905601334052506, guid: 81a6fcf5b0cc8eb49ac475698f324409, type: 3}
+  inverterPrefab: {fileID: 6583482459921523722, guid: d6ff1d3e7355aad4fa6611aa4100e837, type: 3}
   bgStripes: {fileID: 2100000, guid: 9f3bfa7c51fd3ad48a7a0437e5468bb8, type: 2}
   transitionStripes: {fileID: 2100000, guid: 79821531854af1846bda9f19868f1ff6, type: 2}
   stripesSpeed: 0.02

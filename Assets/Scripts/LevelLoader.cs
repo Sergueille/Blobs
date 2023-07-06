@@ -111,9 +111,9 @@ public static class LevelLoader
         LevelObjectData[] objects = new LevelObjectData[26];
         int objectCountOnMapToDescribe = 0;
 
-        const int MAX_DIAMONDS = 16;
-        LevelObjectData[] diamonds = new LevelObjectData[MAX_DIAMONDS];
-        int diamondCount = 0;
+        const int MAX_NON_DESCRIBED = 32;
+        LevelObjectData[] nonDescribedObjects = new LevelObjectData[MAX_NON_DESCRIBED];
+        int nonDescribedCount = 0;
 
         // Convert map to bool array
         data.data = new bool[data.size.x * data.size.y];
@@ -128,19 +128,30 @@ public static class LevelLoader
                     data.data[targetIndex] = true;
                 else if (c == '#')
                     data.data[targetIndex] = false;
-                else if (c == '!')
+                else if (c == '!' || c == '?')
                 {
-                    if (diamondCount == MAX_DIAMONDS)
-                        throw new System.Exception($"In level map '{title}' at position ({x}, {y}): Are you serious? There are way too many diamonds in this level!");
+                    if (nonDescribedCount == MAX_NON_DESCRIBED)
+                        throw new System.Exception($"In level map '{title}' at position ({x}, {y}): Are you serious? There are way too many objects in this level!");
 
-                    diamonds[diamondCount] = new LevelObjectData{
+                    ObjectType type;
+                    if (c == '!')
+                    {
+                        type = ObjectType.diamond;
+                    }
+                    else
+                    {
+                        type = ObjectType.inverter;
+                    }
+
+                    nonDescribedObjects[nonDescribedCount] = new LevelObjectData{
                         position = new Vector2Int(x, y),
                         color = GameColor.none,
                         eyes = 0,
-                        type = ObjectType.diamond
+                        type = type
                     };
-                    diamondCount++;                    
-                    
+
+
+                    nonDescribedCount++;   
                     data.data[targetIndex] = true;
                 }
                 else if (IsValidLevelObjectCharacter(c))
@@ -159,7 +170,7 @@ public static class LevelLoader
         }
 
         //// Get object lines
-        data.objects = new LevelObjectData[objectCountOnMapToDescribe + diamondCount];
+        data.objects = new LevelObjectData[objectCountOnMapToDescribe + nonDescribedCount];
         int objectCountInObjects = 0;
         while (true)
         {
@@ -220,10 +231,10 @@ public static class LevelLoader
         if (objectCountInObjects < objectCountOnMapToDescribe)
             throw new System.Exception($"In level objects '{title}': there are {objectCountOnMapToDescribe} objects on map, bun only {objectCountInObjects} objects described");
 
-        // Copy diamond array into data
-        for (int i = 0; i < diamondCount; i++)
+        // Copy non described array into data
+        for (int i = 0; i < nonDescribedCount; i++)
         {
-            data.objects[objectCountOnMapToDescribe + i] = diamonds[i];
+            data.objects[objectCountOnMapToDescribe + i] = nonDescribedObjects[i];
         }
 
         return data;
