@@ -542,16 +542,30 @@ z end  blue  2
 -
 
 what now?
-##c##
+##a##
 ##.##
-a#b##
-.?..z
-##..#
+##.##
+z.?..
+##.#.
+##...
+-
+a blob green 1
+z end  green 1
+-
+
+double inversion
+##a##
+##.##
+b.?..
+##...
+.?..#
+y####
+z####
 -
 a blob red   1
 b blob blue  1
-c blob green 1
-z end  cyan  3
+y end  red   1
+z end  blue  1
 -
 
 complementary color
@@ -573,6 +587,19 @@ y end  yellow  1
 x end  cyan   1
 -
 
+opposite
+##c##
+##.##
+a#b##
+.?...
+##.z.
+-
+a blob red   1
+b blob blue  1
+c blob green 1
+z end  cyan  3
+-
+
 expand the palette
 #b.##
 z....
@@ -585,16 +612,29 @@ z end  blue  2
 -
 
 alchemy
-a#b#c.#d
-...##.#.
-##z.....
-##..?...
+az#
+#.b
+#?#
+..#
+...
 -
-a blob magenta 1
-b blob green   1
-c blob blue    1
-d blob blue    1
-z end  red     4
+a blob yellow  1
+b blob magenta 1
+z end  red     2
+-
+
+still logic
+a##
+.##
+.##
+?##
+.#b
+..z
+##.
+-
+a blob brown 1
+b blob green 1
+z end  green 2
 -
 
 vanishing
@@ -610,7 +650,7 @@ b#..#
 -
 a blob blue  1
 b blob red   1
-d blob blue  1
+d blob green 1
 z end  blue  3
 -
 
@@ -626,7 +666,7 @@ a blob red   1
 z end  brown 1
 -
 
-test
+roundabout
 #...#b
 #a#...
 #.##..
@@ -636,5 +676,22 @@ test
 a blob red   1
 b blob green 1
 z end  blue  2
+-
+
+the last level
+###.#####
+##..####.
+#a.####b.
+...!z!..#
+...###..#
+..####.##
+#..?....#
+#..###.c#
+##..#####
+-
+a blob cyan    1
+b blob yellow  1
+c blob brown   1
+z end  magenta 1
 -
 

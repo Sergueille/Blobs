@@ -8,6 +8,7 @@
 "set_volume","Volume","Volume"
 "set_language","Language","Langue"
 "set_erase_btn","Reset progress","Réinitialiser le jeu"
+"set_colorblind","Colorblind mode","Mode daltonien"
 "rst_title","Are you sure?","Êtes-vous sûr?"
 "rst_desc","All your progress and settings will be erased, but your custom levels files won't be deleted.\nIf you proceed, the application will close.","Toute votre progression et vos paramètres seront supprimés, mais vos fichiers de niveaux seront conservés.\nSi vous continuez, le jeu se fermera."
 "rst_yes_btn","Ok, delete all","Ok, tout supprimer"

@@ -30,6 +30,7 @@ public class End : LevelObject
         foreach (SpriteRenderer dot in dots)
         {
             dot.color = GameManager.i.colors[(int)data.color];
+            dot.material = GameManager.i.GetColorMaterial(data.color);
         }
     }
     

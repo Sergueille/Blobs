@@ -46,6 +46,8 @@ public class UIManager : MonoBehaviour
 
     private Coroutine levelTitleCoroutine;
 
+    private RectTransform canvasTransform;
+
     private void Awake()
     {
         i = this;
@@ -53,6 +55,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        canvasTransform = gameObject.GetComponent<RectTransform>();
+
         if (!PlayerPrefs.HasKey(GameManager.MAIN_COLLECTION)) // Do not show menu on first time
         {
             currentPanel = Panel.ingame;
@@ -100,12 +104,12 @@ public class UIManager : MonoBehaviour
         {
             GameManager.i.RemoveCurrentLevel();
             RefreshLevelList();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(levelList);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(canvasTransform);
 
             int levelCount = GameManager.i.currentCollection.levels.Count;
 
             levelCountText.text = $"{GameManager.i.currentLevelId + 1} / {levelCount}";
-            levelListView.verticalNormalizedPosition = (1 - ((float)GameManager.i.currentLevelId / levelCount)) * (1 - 6 / levelCount);
+            levelListView.verticalNormalizedPosition = 1 - (float)GameManager.i.currentLevelId / levelCount;
             levelListView.velocity = Vector2.zero;
         }
         else if (currentPanel == Panel.collectionList)

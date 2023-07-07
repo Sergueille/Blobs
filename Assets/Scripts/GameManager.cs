@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
 
     public const string SLIDE_SENSITIVITY = "SlideSensitivity";
     public const string GLOBAL_VOLUME = "GlobalVolume";
+    public const string COLORBLIND_MODE = "ColorblindMode";
 
     public static GameManager i;
 
@@ -41,6 +42,8 @@ public class GameManager : MonoBehaviour
     [NonSerialized] public List<LevelObject> levelObjects;
 
     public Color[] colors;
+    public Material[] colorMaterials;
+    public Material defaultMaterial;
 
     [Tooltip("Proportion of the screen that will be outside the safe zone")]
     public float screenMargin = 0.1f;
@@ -89,6 +92,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Slider slideSensitivitySlider;
     [SerializeField] private Slider globalVolumeSlider;
     [SerializeField] private TMP_Dropdown languageDropdown;
+    [SerializeField] private Toggle colorblindToggle;
 
     private bool levelComplete = false; // Used to prevent submit moves during transition and beak things
 
@@ -104,6 +108,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float tutoHandSlideDuration = 0.5f;
     [SerializeField] private float tutoHandFadeDuration = 0.2f;
     private Coroutine handCoroutine;
+
+    public bool colorblindMode = false;
 
     private void Awake()
     {
@@ -375,7 +381,10 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < currentLevel.size.y; y++)
             {
-                SpriteRenderer tile = Instantiate(tilePrefab, GetScreenPosition(x, y), Quaternion.identity).GetComponent<SpriteRenderer>();
+                Vector3 pos = GetScreenPosition(x, y);
+                pos.z = 1; // Tiles are behind to make colorblind materials display in front
+
+                SpriteRenderer tile = Instantiate(tilePrefab, pos, Quaternion.identity).GetComponent<SpriteRenderer>();
 
                 int spriteIndex = GetSpriteIndexOfTile(currentLevel, x, y);
 
@@ -721,6 +730,9 @@ public class GameManager : MonoBehaviour
         slideSensitivity = GetSettingFloat(SLIDE_SENSITIVITY, 0.7f);
         slideSensitivitySlider.value = slideSensitivity;
 
+        colorblindMode = GetSettingBool(COLORBLIND_MODE, false);
+        colorblindToggle.isOn = colorblindMode;
+
         LocalizationManager.UpdateLanguage((LocalizationManager.Language)GetSettingInt(LocalizationManager.LANGUAGE_KEY, (int)LocalizationManager.Language.systemLanguage));
         languageDropdown.value = (int)LocalizationManager.currentLanguage;
     }
@@ -743,6 +755,15 @@ public class GameManager : MonoBehaviour
         else return defaultValue;
     }
 
+    public bool GetSettingBool(string settingName, bool defaultValue)
+    {
+        if (PlayerPrefs.HasKey(settingName))
+        {
+            return PlayerPrefs.GetInt(settingName) > 0;
+        }
+        else return defaultValue;
+    }
+
     public void SetGlobalVolume(float volume)
     {
         PlayerPrefs.SetFloat(GLOBAL_VOLUME, volume);
@@ -752,6 +773,12 @@ public class GameManager : MonoBehaviour
     public void SetSlideSensitivity(float val)
     {
         PlayerPrefs.SetFloat(SLIDE_SENSITIVITY, val);
+        UpdateSettings();
+    }
+
+    public void SetColorblindMode(bool val)
+    {
+        PlayerPrefs.SetInt(COLORBLIND_MODE, val ? 1 : 0);
         UpdateSettings();
     }
 
@@ -805,6 +832,15 @@ public class GameManager : MonoBehaviour
             LeanTween.alpha(tutoHand.gameObject, 0, tutoHandFadeDuration);
             yield return new WaitForSeconds(tutoHandFadeDuration);
         }
+    }
+
+    public Material GetColorMaterial(GameColor color)
+    {
+        if (colorblindMode)
+        {
+            return colorMaterials[(int)color];
+        }
+        else return defaultMaterial;
     }
 }
 

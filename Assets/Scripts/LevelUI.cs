@@ -11,9 +11,17 @@ public class LevelUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private RectTransform image;
     [SerializeField] private RectTransform lockImage;
+    [SerializeField] private RectTransform parent;
+    [SerializeField] private float timeBetweenAppear;
+    [SerializeField] private float appearDuration;
 
-    private bool doneUI = false;
+    private bool appeared = false;
     private bool locked;
+    private bool startedOnScreen;
+    private bool onScreenInit = false;
+
+    private static float lastAppearTime; 
+
 
     public void Init(LevelData data, int levelId)
     {
@@ -27,16 +35,35 @@ public class LevelUI : MonoBehaviour
         title.text = titleText;
 
         lockImage.gameObject.SetActive(locked);
+
+        parent.localScale = Vector3.zero;
     }
 
     private void Update()
     {
-        if (!locked)
-            if (!doneUI && image.position.y > -GameManager.i.mainCamera.orthographicSize - 2 && image.position.y < GameManager.i.mainCamera.orthographicSize + 2)
-            {
-                UIManager.i.MakeLevelUI(data, image, 30); // Do this only on screen to reduce lag
-                doneUI = true;
-            }
+        if (!onScreenInit)
+        {
+            onScreenInit = true;
+            startedOnScreen = IsOnScreen();
+
+            if (!startedOnScreen)
+              parent.localScale = Vector3.one;
+        }
+
+        bool onScreen = IsOnScreen();
+        bool canAppear = !startedOnScreen || Time.time - lastAppearTime > timeBetweenAppear;
+        
+        if (!appeared && onScreen && canAppear)
+        {
+            lastAppearTime = Time.time;
+            appeared = true;
+
+            if (startedOnScreen)
+                LeanTween.scale(parent, Vector3.one, appearDuration).setEaseOutExpo();
+
+            if (!locked)
+                UIManager.i.MakeLevelUI(data, image, 30); // Do this only on screen to reduce lag   
+        }
     }
 
     public void OnClick()
@@ -46,5 +73,10 @@ public class LevelUI : MonoBehaviour
                 UIManager.i.SelectPanelImmediately(UIManager.Panel.ingame);
                 GameManager.i.MakeLevel(levelId);
             });
+    }
+
+    private bool IsOnScreen()
+    {
+        return image.position.y > -GameManager.i.mainCamera.orthographicSize - 2 && image.position.y < GameManager.i.mainCamera.orthographicSize + 2;
     }
 }

@@ -177,6 +177,10 @@ public class Blob : LevelObject
         if (immediate)
             blobSprite.color = GameManager.i.colors[(int)data.color];
         else
+        {
             LeanTween.color(blobSprite.gameObject, GameManager.i.colors[(int)data.color], colorTransitionDuration);
+        }
+        
+        blobSprite.material = GameManager.i.GetColorMaterial(data.color);
     }
 }
