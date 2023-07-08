@@ -10,7 +10,7 @@
 <body>
     <nav>
         <div class="icon-image" src="icon.png"></div>
-        <span class="game-title">Blob Game</span>
+        <span class="game-title">Eyes & Blobs</span>
     </nav>
 
     <div class="page">
@@ -58,11 +58,12 @@
             <ul>
                 <li><code>Level name</code> is the name of the level that will be shown ingame. It can contains special characters, but not for the first letter.</li>
                 <li>
-                    On the next lines is the level map. Each character represents a tile.
+                    On the next lines is the level map. Each character represents a tile. The map must be rectangular.
                     <ul>
                         <li><code>.</code> is a white tile, where objects can move</li>
                         <li><code>#</code> is outside the level, where objects cannot move</li>
                         <li><code>!</code> is a sticky diamond</li>
+                        <li><code>?</code> is a color inverter</li>
                         <li>Characters form <code>a</code> to <code>z</code> are other objects, that should be described under the map</li>
                     </ul>
                 </li>
@@ -91,7 +92,7 @@
         </p>
         <h2>We're finished!</h2>
         <p>
-            You can now open the level file in the game!
+            You can now open the level file in the game! (You may have to close and open the game to refresh the level list).<br>
             The example level given above should look like that:
             <img src="example.png">
         </p>
@@ -99,7 +100,7 @@
         <h3>In level map <code>Title</code> at position (<code>x</code>, <code>y</code>): expected a map character, got <code>something</code>.</h3>
         <p>
             You may have forgot the <code>-</code> at the end of the map (shame on you), and the game thinks the object descriptions are inside the map, and is very confused.<br>
-            You may also have included a bad character in the map. You can only use <code>.</code>, <code>#</code>, <code>!</code>, or characters between <code>a</code> to <code>z</code>.
+            You may also have included a bad character in the map. You can only use <code>.</code>, <code>#</code>, <code>!</code>, <code>?</code>, or characters between <code>a</code> to <code>z</code>.
         </p>
         <h3>In level objects <code>Title</code>: the object <code>something</code> is not present in the map or have been described twice<br>
         In level objects <code>Title</code>: there are <code>x</code> objects on map, bun only <code>y</code> objects described</h3>

@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
         collectionList,
         settings,
         resetConfirmation,
+        stats,
         valueCount
     }
 
@@ -44,9 +45,14 @@ public class UIManager : MonoBehaviour
 
     public TextMeshProUGUI versionText;
 
+    public TextMeshProUGUI statsText;
+
     private Coroutine levelTitleCoroutine;
 
     private RectTransform canvasTransform;
+
+    private bool shouldUpdateLevelListPositionNextFrame = false;
+    
 
     private void Awake()
     {
@@ -80,6 +86,15 @@ public class UIManager : MonoBehaviour
         versionText.text = Application.version;
     }
 
+    private void Update()
+    {
+        if (shouldUpdateLevelListPositionNextFrame)
+        {
+            levelListView.verticalNormalizedPosition = 1 - (float)GameManager.i.currentLevelId / GameManager.i.currentCollection.levels.Count;
+            shouldUpdateLevelListPositionNextFrame = false;
+        }
+    }
+
     public void SelectPanel(string panelName)
     {
         Panel panel = (Panel)Enum.Parse(typeof(Panel), panelName, true);
@@ -109,7 +124,7 @@ public class UIManager : MonoBehaviour
             int levelCount = GameManager.i.currentCollection.levels.Count;
 
             levelCountText.text = $"{GameManager.i.currentLevelId + 1} / {levelCount}";
-            levelListView.verticalNormalizedPosition = 1 - (float)GameManager.i.currentLevelId / levelCount;
+            shouldUpdateLevelListPositionNextFrame = true;
             levelListView.velocity = Vector2.zero;
         }
         else if (currentPanel == Panel.collectionList)
@@ -135,6 +150,27 @@ public class UIManager : MonoBehaviour
                 Button btn = collUI.GetComponentInChildren<Button>();
                 btn.onClick.AddListener(() => LoadCollectionFromFile(fileNameWithoutExtension));
             }
+        }
+        else if (currentPanel == Panel.stats)
+        {
+            GameManager.i.stats.timePlayed += (Time.time - GameManager.i.startTime) / 60; // Force update time
+            GameManager.i.startTime = Time.time;
+
+            string txt = "";
+            txt += GetLine("stat_time_played", GameManager.i.stats.timePlayed);
+            txt += GetLine("stat_moves", GameManager.i.stats.moves);
+            txt += GetLine("stat_restarts", GameManager.i.stats.restarts);
+            txt += GetLine("stat_ends", GameManager.i.stats.ends);
+            txt += GetLine("stat_fusions", GameManager.i.stats.fusions);
+            txt += GetLine("stat_eyes", GameManager.i.stats.extractedEyes);
+            txt += GetLine("stat_inversions", GameManager.i.stats.inversions);
+
+            statsText.text = txt;
+
+            string GetLine(string key, object value)
+                => LocalizationManager.GetValue(key) + ": " + value.ToString() + "\n";
+
+            // TODO: create panel and assign it in inspector
         }
     }
 

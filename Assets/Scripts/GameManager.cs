@@ -111,6 +111,9 @@ public class GameManager : MonoBehaviour
 
     public bool colorblindMode = false;
 
+    public Statistics stats;
+    public float startTime;
+
     private void Awake()
     {
         i = this;
@@ -125,6 +128,9 @@ public class GameManager : MonoBehaviour
 
         LocalizationManager.Init();
         UpdateSettings();
+
+        stats = Statistics.Load();
+        startTime = Time.time;
     }
 
     private void Update()
@@ -192,6 +198,9 @@ public class GameManager : MonoBehaviour
 
         if (direction != Vector2Int.zero)
         {
+            stats.moves++;
+            stats.Save();
+
             playSmallBlobSoundOnThisMove = false;
             playBigBlobSoundOnThisMove = false;
 
@@ -286,6 +295,9 @@ public class GameManager : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(rewindSound, mainCamera.transform.position, globalVolume);
         MakeLevelWithTransition(currentLevelId);
+
+        stats.restarts++;
+        stats.Save();
     }
 
     private void OnLevelComplete()
@@ -623,6 +635,9 @@ public class GameManager : MonoBehaviour
 
                     playBigBlobSoundOnThisMove = true;
 
+                    stats.extractedEyes++;
+                    stats.Save();
+
                     Blob newBlob = Instantiate(blobPrefab).GetComponent<Blob>();
                     newBlob.Init(new LevelObjectData{
                         position = objectPos,
@@ -655,6 +670,9 @@ public class GameManager : MonoBehaviour
 
             playBigBlobSoundOnThisMove = true;
 
+            stats.fusions++;
+            stats.Save();
+
             TestEnd(currentBlob); // Retest end after fusion
             return;
         }
@@ -673,6 +691,9 @@ public class GameManager : MonoBehaviour
         {
             currentBlob.SetColor((GameColor)((int)~currentBlob.data.color & 0b111));
             currentBlob.MakeParticlesOnApply(currentBlob.data.color);
+
+            stats.inversions++;
+            stats.Save();
 
             playBigBlobSoundOnThisMove = true;
         }
@@ -695,6 +716,9 @@ public class GameManager : MonoBehaviour
             playBigBlobSoundOnThisMove = true;
             end.DestroyObject();
             blob.DestroyObject();
+
+            stats.ends++;
+            stats.Save();
         }
     }
 
@@ -842,6 +866,28 @@ public class GameManager : MonoBehaviour
         }
         else return defaultMaterial;
     }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            float timeSpent = Time.time - startTime;
+            stats.timePlayed += timeSpent / 60;
+            stats.Save();
+            startTime = Time.time;
+        }
+        else
+        {
+            startTime = Time.time;
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        float timeSpent = Time.time - startTime;    
+        stats.timePlayed += timeSpent / 60;
+        stats.Save();
+    }   
 }
 
 public class LevelCollection
@@ -871,5 +917,40 @@ public class LevelObjectData
     public LevelObjectData Clone()
     {
         return (LevelObjectData)MemberwiseClone();
+    }
+}
+
+public struct Statistics
+{
+    public float timePlayed;
+    public int fusions;
+    public int inversions;
+    public int restarts;
+    public int extractedEyes;
+    public int ends;
+    public int moves;
+
+    public static Statistics Load()
+    {
+        return new Statistics {
+            timePlayed = GameManager.i.GetSettingFloat("timePlayed", 0),
+            fusions = GameManager.i.GetSettingInt("fusions", 0),
+            inversions = GameManager.i.GetSettingInt("inversions", 0),
+            restarts = GameManager.i.GetSettingInt("restarts", 0),
+            extractedEyes = GameManager.i.GetSettingInt("extractedEyes", 0),
+            ends = GameManager.i.GetSettingInt("ends", 0),
+            moves = GameManager.i.GetSettingInt("moves", 0),
+        };
+    }
+
+    public void Save()
+    {
+        PlayerPrefs.SetFloat("timePlayed", timePlayed);
+        PlayerPrefs.SetInt("fusions", fusions);
+        PlayerPrefs.SetInt("inversions", inversions);
+        PlayerPrefs.SetInt("restarts", restarts);
+        PlayerPrefs.SetInt("extractedEyes", extractedEyes);
+        PlayerPrefs.SetInt("ends", ends);
+        PlayerPrefs.SetInt("moves", moves);
     }
 }

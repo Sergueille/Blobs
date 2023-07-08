@@ -79,7 +79,9 @@ public class Blob : LevelObject
 
     public override void ApplyChanges()
     {
-        Vector2 newScreenPosition = GameManager.i.GetScreenPosition(data.position);
+        Vector3 newScreenPosition = GameManager.i.GetScreenPosition(data.position);
+        newScreenPosition.z = -1; // Make sure is in front (for colorblind mode)
+
         float distance = (data.position - oldPosition).magnitude;
         Vector2 direction = data.position - oldPosition;
 

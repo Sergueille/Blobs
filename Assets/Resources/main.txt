@@ -666,6 +666,21 @@ a blob red   1
 z end  brown 1
 -
 
+need two eyes
+a###
+..?#
+z#.#
+##.#
+b...
+...!
+....
+...#
+-
+a blob red   1
+b blob green 2
+z end  red   3
+-
+
 roundabout
 #...#b
 #a#...
