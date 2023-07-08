@@ -6,7 +6,7 @@ first level
 a##b.
 .###.
 .....
--
+- 4
 a blob red 1
 b end  red 1
 -
@@ -19,7 +19,7 @@ stairs
 .....
 ...##
 .####
--
+- 9
 a blob green 1
 b end  green 1
 -
@@ -30,7 +30,7 @@ a#c#
 ....
 ###.
 b...
--
+- 4
 a blob blue 1
 c blob blue 1
 b end  blue 2
@@ -42,7 +42,7 @@ b..z
 #..#
 a...
 ##..
--
+- 7
 a blob red     1
 b blob blue    1
 z end  magenta 2
@@ -55,7 +55,7 @@ a#b##
 c#d##
 .....
 ####y
--
+- 3
 a blob blue   1
 b blob green  1
 x end  cyan   2
@@ -68,7 +68,7 @@ brown
 e#f##
 .....
 g.##z
--
+- 5
 e blob blue   1
 f blob green  1
 g blob red    1
@@ -83,7 +83,7 @@ stuck in the middle
 #a.#..#
 #.....#
 ##...##
--
+- 6
 a blob red  1
 b blob blue 1
 c end  red  1
@@ -101,7 +101,7 @@ d#.
 .b#
 c##
 f##
--
+- 7
 a blob green  1
 b blob red    1
 e blob blue   1
@@ -119,7 +119,7 @@ traps
 ...b##.
 .##.###
 .#....#
--
+- 11
 a blob green  1
 b blob yellow 1
 c end  green  1
@@ -133,7 +133,7 @@ a###.
 ..y..
 #.###
 #b###
--
+- 9
 a blob cyan  2
 b blob cyan  1
 x end  cyan  1
@@ -149,7 +149,7 @@ e.a..
 .....
 ..d.#
 #.###
--
+- 13
 a blob red     1
 b blob red     2
 c blob blue    1
@@ -167,7 +167,7 @@ m..g..
 #.....
 ##....
 .....#
--
+- 11
 y blob red     1
 m blob brown   1
 b blob brown   1
@@ -186,7 +186,7 @@ a.xyzb
 #e..##
 #...d.
 ###.##
--
+- 17
 a blob green  1
 b blob green  1
 c blob red    1
@@ -206,7 +206,7 @@ too many blobs
 #a.##
 ##.c#
 ##..b
--
+- 13
 a blob magenta 1
 b blob blue    1
 c blob cyan    1
@@ -224,7 +224,7 @@ b#x#c
 .#.#.
 ..d..
 #....
--
+- 5
 a blob red   1
 b blob red   1
 c blob red   1
@@ -240,7 +240,7 @@ b#x#c#
 .#.#.#
 ..d...
 #....#
--
+- 9
 a blob brown 1
 b blob brown 1
 c blob red   1
@@ -257,7 +257,7 @@ guarded objective
 #.....
 ##b###
 ##.xa#
--
+- 10
 a blob green 1
 b blob green 1
 g blob blue  1
@@ -271,7 +271,7 @@ an annoying mechanic
 z.!..
 ##.#.
 ##...
--
+- 4
 a blob green 1
 z end  green 1
 -
@@ -282,7 +282,7 @@ a###
 !##.
 .#..
 z..#
--
+- 7
 a blob blue 2
 z end  blue 2
 -
@@ -292,7 +292,7 @@ rescue the blue
 .....
 .!...
 ..z.#
--
+- 8
 a blob blue   1
 b blob red    1
 z end magenta 2
@@ -304,7 +304,7 @@ stuck on the wall
 #...
 a..#
 #..#
--
+- 10
 a blob red 1
 b end  red 1
 -
@@ -318,7 +318,7 @@ yield to the right
 #.#...
 #z####
 ...###
--
+- 12
 a blob magenta 1
 b blob magenta 1
 z end  magenta 2
@@ -329,7 +329,7 @@ exchange
 a.b#
 .!.#
 #..#
--
+- 4
 a blob red   2
 b blob blue  1
 z end  blue  2
@@ -340,7 +340,7 @@ useless eye
 a..#
 .!.#
 #..#
--
+- 5
 a blob red     2
 b blob blue    1
 z end  magenta 2
@@ -352,7 +352,7 @@ a.####
 #!##.c
 #.....
 #b.##y
--
+- 9
 a blob blue    1
 b blob blue    1
 c blob yellow  1
@@ -364,7 +364,7 @@ get rid of the brown
 .#z.#
 a..!.
 ##...
--
+- 10
 a blob brown 1
 b blob green 2
 z end  green 3
@@ -379,7 +379,7 @@ the right direction
 #.####
 #.c###
 ##.###
--
+- 12
 a blob blue   1
 b blob red    1
 c blob green  1
@@ -395,7 +395,7 @@ passing through
 .....
 .z...
 ###..
--
+- 12
 r blob red   1
 b blob brown 1
 z end  red   1
@@ -410,7 +410,7 @@ annoying diagonal
 ...!.z
 ####y.
 ####.#
--
+- 19
 a blob red     2
 b blob blue    2
 y end  red     2
@@ -423,7 +423,7 @@ za###
 #....
 #!#..
 #b#..
--
+- 7
 a blob red   1
 b blob red   1
 c blob green 1
@@ -438,7 +438,7 @@ eye traffic
 yz...
 .c#b#
 #.#..
--
+- 16
 a blob red     1
 b blob green   1
 c blob blue    1
@@ -455,8 +455,7 @@ a.!....
 ##.####
 #d.b###
 #..####
-
--
+- 15
 a blob blue    1
 b blob green   1
 c blob red     2
@@ -471,7 +470,7 @@ two in a row
 #!###
 #..##
 #.y##
--
+- 11
 a blob red   1
 b blob blue  1
 c blob green 1
@@ -486,7 +485,7 @@ a.b#
 .!..
 .!..
 #y.#
--
+- 11
 a blob red      2
 b blob green    2
 c blob blue     1
@@ -502,7 +501,7 @@ one at a time
 ##..c
 ##.##
 #b.##
--
+- 16
 a blob yellow 1
 b blob yellow 1
 c blob yellow 1
@@ -519,7 +518,7 @@ a.#####
 ##....#
 ####...
 ######!
--
+- 14
 a blob red 1
 b blob red 1
 z end  red 2
@@ -535,7 +534,7 @@ obstructed level
 #!!.###
 #.!.zg#
 ##..###
--
+- 16
 a blob blue  2
 g blob brown 1
 z end  blue  2
@@ -548,7 +547,7 @@ what now?
 z.?..
 ##.#.
 ##...
--
+- 4
 a blob green 1
 z end  green 1
 -
@@ -561,7 +560,7 @@ b.?..
 .?..#
 y####
 z####
--
+- 6
 a blob red   1
 b blob blue  1
 y end  red   1
@@ -578,7 +577,7 @@ b###
 c###
 .?..
 ###x
--
+- 3
 a blob green   1
 b blob blue    1
 c blob red     1
@@ -593,7 +592,7 @@ opposite
 a#b##
 .?...
 ##.z.
--
+- 4
 a blob red   1
 b blob blue  1
 c blob green 1
@@ -605,7 +604,7 @@ expand the palette
 z....
 #..?.
 ##c.#
--
+- 5
 b blob red   1
 c blob green 1
 z end  blue  2
@@ -617,10 +616,20 @@ az#
 #?#
 ..#
 ...
--
+- 8
 a blob yellow  1
 b blob magenta 1
 z end  red     2
+-
+
+shake the blobs
+b##a
+...z
+.?#?
+- 8
+a blob magenta 1
+b blob red     1
+z end  blue    2
 -
 
 still logic
@@ -631,7 +640,7 @@ a##
 .#b
 ..z
 ##.
--
+- 4
 a blob brown 1
 b blob green 1
 z end  green 2
@@ -647,7 +656,7 @@ b#..#
 ##.d#
 #..?#
 #....
--
+- 11
 a blob blue  1
 b blob red   1
 d blob green 1
@@ -661,7 +670,7 @@ came from nowhere
 ....
 #.z#
 ##a#
--
+- 11
 a blob red   1
 z end  brown 1
 -
@@ -675,7 +684,7 @@ b...
 ...!
 ....
 ...#
--
+- 17
 a blob red   1
 b blob green 2
 z end  red   3
@@ -687,7 +696,7 @@ roundabout
 #.##..
 ..?!z#
 ..####
--
+- 35
 a blob red   1
 b blob green 1
 z end  blue  2
@@ -703,7 +712,7 @@ the last level
 #..?....#
 #..###.c#
 ##..#####
--
+- 87
 a blob cyan    1
 b blob yellow  1
 c blob brown   1

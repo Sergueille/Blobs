@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     public const string MAIN_COLLECTION = "MainCollection";
     public const string COLLECTION_NAME = "CollectionName";
 
+    public const string GAME_FINISHED = "GameFinished";
+
     public const string SLIDE_SENSITIVITY = "SlideSensitivity";
     public const string GLOBAL_VOLUME = "GlobalVolume";
     public const string COLORBLIND_MODE = "ColorblindMode";
@@ -100,6 +102,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int levelCompleteParticleCount;
     [SerializeField] private float levelCompleteParticlesScale = 1.7f;
 
+    [SerializeField] private float endParticlesDuration = 5;
+    [SerializeField] private int endParticlesPerSecond = 5;
+
     [SerializeField] private float forbiddenSlideZoneSize = 0.1f; // Zone on the top and bottom to prevent sliding when the used wants to quit fullscreen (screen units)
 
     [SerializeField] private SpriteRenderer tutoHand;
@@ -112,7 +117,10 @@ public class GameManager : MonoBehaviour
     public bool colorblindMode = false;
 
     public Statistics stats;
-    public float startTime;
+    [NonSerialized] public float startTime;
+
+    [SerializeField] private TextMeshProUGUI moveCountText;
+    public int moveCount;
 
     private void Awake()
     {
@@ -131,6 +139,8 @@ public class GameManager : MonoBehaviour
 
         stats = Statistics.Load();
         startTime = Time.time;
+
+        moveCountText.gameObject.SetActive(false);  
     }
 
     private void Update()
@@ -201,6 +211,8 @@ public class GameManager : MonoBehaviour
             stats.moves++;
             stats.Save();
 
+            moveCount++;
+
             playSmallBlobSoundOnThisMove = false;
             playBigBlobSoundOnThisMove = false;
 
@@ -270,6 +282,21 @@ public class GameManager : MonoBehaviour
             currentLevelId = 0;
             MakeLevel(currentLevelId);
         }
+
+        // Show move count
+        if (PlayerPrefs.HasKey(GAME_FINISHED) || !currentCollection.isMainCollection)
+        {
+            moveCountText.gameObject.SetActive(true);
+
+            moveCountText.text = $"<size=100>{moveCount}</size>/{currentLevel.moveCount}";
+
+            Color color = moveCount > currentLevel.moveCount ? Color.red : Color.white;
+            moveCountText.color = color;
+        }
+        else
+        {
+            moveCountText.gameObject.SetActive(false);
+        }
     }
 
     public void LoadCollection(LevelCollection collection)
@@ -326,9 +353,17 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(levelCompleteDuration / levelCompleteParticleCount);
         }
 
-        currentLevelId += 1;
-        currentLevelId %= currentCollection.levels.Count;
-        MakeLevelWithTransition(currentLevelId);
+        // Show end!
+        if (currentCollection.isMainCollection && currentLevelId == currentCollection.levels.Count - 1)
+        {
+            OnMainCollectionFinished();
+        }
+        else
+        {
+            currentLevelId += 1;
+            currentLevelId %= currentCollection.levels.Count;
+            MakeLevelWithTransition(currentLevelId);
+        }
     }
 
     public void MakeLevelWithTransition(int levelIndex)
@@ -370,6 +405,8 @@ public class GameManager : MonoBehaviour
 
         currentLevelId = levelIndex;
         currentLevel = currentCollection.levels[levelIndex];
+
+        moveCount = 0;
 
         if (currentLevelId == 0 && currentCollection.isMainCollection)
             ShowTutorial();
@@ -888,6 +925,31 @@ public class GameManager : MonoBehaviour
         stats.timePlayed += timeSpent / 60;
         stats.Save();
     }   
+
+    private void OnMainCollectionFinished()
+    {
+        MakeTransition(() => {
+            RemoveCurrentLevel();
+            UIManager.i.SelectPanelImmediately(UIManager.Panel.end); // Statistics are set by UIManager
+            StartCoroutine(EndParticlesCoroutine());
+            PlayerPrefs.SetInt(GAME_FINISHED, 1);
+        });
+    }
+
+    private IEnumerator EndParticlesCoroutine()
+    {
+        for (int i = 0; i < endParticlesDuration * endParticlesPerSecond; i++)
+        {
+            Vector2 randomPos = new Vector2(
+                UnityEngine.Random.Range(-mainCamera.orthographicSize, mainCamera.orthographicSize) * Screen.width / Screen.height,
+                UnityEngine.Random.Range(-mainCamera.orthographicSize, mainCamera.orthographicSize)
+            );
+
+            CreateParticles((GameColor)UnityEngine.Random.Range((int)GameColor.red, (int)GameColor.brown + 1), randomPos, levelCompleteParticlesScale);
+
+            yield return new WaitForSeconds(1.0f / (float)endParticlesPerSecond);
+        }
+    }
 }
 
 public class LevelCollection
@@ -905,6 +967,7 @@ public class LevelData
     public Vector2Int size;
     public bool[] data;
     public LevelObjectData[] objects;
+    public int moveCount;
 }
 
 public class LevelObjectData

@@ -25,3 +25,6 @@
 "stat_eyes","Extracted eyes","Yeux extraits"
 "stat_ends","Target points completed","Points de fin validés"
 "stat_title","Statistics","Statistiques"
+"end_congrats","Congratulations!","Félicitations!"
+"end_finish","You finished the game!","Vous avez terminé le jeu!"
+"end_txt","You can now try to find solutions with as few moves as possible. New levels will be added with an (hypothetic) update","Vous pouvez maintenant essayer de trouver des solutions avec le moins de mouvement possible. Des niveaux supplémentaires seront ajoutés lors d'une (éventuelle) mise à jour."

@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
         settings,
         resetConfirmation,
         stats,
+        end,
         valueCount
     }
 
@@ -46,6 +47,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI versionText;
 
     public TextMeshProUGUI statsText;
+    public TextMeshProUGUI endStatsText;
 
     private Coroutine levelTitleCoroutine;
 
@@ -151,7 +153,7 @@ public class UIManager : MonoBehaviour
                 btn.onClick.AddListener(() => LoadCollectionFromFile(fileNameWithoutExtension));
             }
         }
-        else if (currentPanel == Panel.stats)
+        else if (currentPanel == Panel.stats || currentPanel == Panel.end)
         {
             GameManager.i.stats.timePlayed += (Time.time - GameManager.i.startTime) / 60; // Force update time
             GameManager.i.startTime = Time.time;
@@ -165,7 +167,7 @@ public class UIManager : MonoBehaviour
             txt += GetLine("stat_eyes", GameManager.i.stats.extractedEyes);
             txt += GetLine("stat_inversions", GameManager.i.stats.inversions);
 
-            statsText.text = txt;
+            statsText.text = endStatsText.text = txt;
 
             string GetLine(string key, object value)
                 => LocalizationManager.GetValue(key) + ": " + value.ToString() + "\n";

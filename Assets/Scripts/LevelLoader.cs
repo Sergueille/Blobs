@@ -108,6 +108,19 @@ public static class LevelLoader
             levelData += contentLine;
         }
 
+        // Try read move count
+        bool areMoves = false;
+        if (contentLine.Length > 1)
+        {
+            areMoves = int.TryParse(contentLine.Substring(1), out int res);
+
+            if (areMoves)
+                data.moveCount = res;
+        }
+
+        if (!areMoves)
+            throw new System.Exception($"In level '{title}': missing move count");
+
         LevelObjectData[] objects = new LevelObjectData[26];
         int objectCountOnMapToDescribe = 0;
 
