@@ -170,9 +170,12 @@ public class UIManager : MonoBehaviour
             statsText.text = endStatsText.text = txt;
 
             string GetLine(string key, object value)
-                => LocalizationManager.GetValue(key) + ": " + value.ToString() + "\n";
-
-            // TODO: create panel and assign it in inspector
+            {
+                if (value is float v)
+                    value = Mathf.CeilToInt(v);
+                    
+                return LocalizationManager.GetValue(key) + ": " + value.ToString() + "\n";
+            }
         }
     }
 
