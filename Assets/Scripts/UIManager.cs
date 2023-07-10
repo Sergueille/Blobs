@@ -330,4 +330,9 @@ public class UIManager : MonoBehaviour
         LeanTween.moveY(levelTitle.gameObject, underScreen, levelTitleTransitionDuration)
             .setEaseInExpo();
     } 
+
+    public void RedirectToDocs()
+    {
+        Application.OpenURL("https://sergueille.github.io/Blobs/Docs/levels");
+    }
 }

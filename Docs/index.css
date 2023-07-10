@@ -21,6 +21,8 @@ button, .btn, input, select, textarea {
     text-decoration: none;
 
     transition: 200ms;
+
+    margin: 5px 0;
 }
 
 button, .btn {
@@ -159,16 +161,24 @@ nav {
 
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: baseline;
     justify-content: start;
+
+    padding-top: 7px;
 
     font-size: 2rem;
     font-weight: bold;
 
-    border-bottom: 1px solid var(--bg-lll);
-    box-shadow: #000 0 0 20px -10px;
+    border-bottom: 1px solid var(--border);
+    box-shadow: #0008 0 0 15px -10px;
 
     position: relative;
+}
+
+.site-title {
+    margin: 10px;
+    font-size: 2rem;
+    text-decoration: none;
 }
 
 .icon-image {
@@ -177,16 +187,20 @@ nav {
     background-size: 150%;
     border-radius: 25%;
 
-    width: 3rem;
-    height: 3rem;
-    margin: 10px;
-
-    position: fixed;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 10px;
 }
 
-.game-title {
-    position: fixed;
-    left: 4rem;
+.nav-link {
+    margin: 10px;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.slash {
+    font-size: 2.5rem;
+    color: var(--txt-d);
 }
 
 .page {
@@ -199,7 +213,7 @@ h1 {
 
 h1, h2 {
     margin: 40px 0 10px 0;
-    border-bottom: 1px solid var(--bg-lll);
+    border-bottom: 1px solid var(--border);
 }
 
 code {
@@ -242,6 +256,12 @@ img {
     margin: 10px;
 }
 
+.bg {
+    width: 50%;
+    height: auto;
+    margin-top: 0;
+}
+
 /* MEDIA */
 
 @media (prefers-color-scheme: dark) {
@@ -253,6 +273,8 @@ img {
 
         --prim-d: #921010;
         --prim: #881111;
+
+        --border: #444;
 
         --txt: #eee;
         --txt-d: #aaa;
@@ -280,6 +302,8 @@ img {
         
         --prim-d: #cf5656;
         --prim: #ff5252;
+        
+        --border: #ccc;
 
         --txt: #222;
         --txt-d: #666;
