@@ -54,7 +54,10 @@ public class UIManager : MonoBehaviour
     private RectTransform canvasTransform;
 
     private bool shouldUpdateLevelListPositionNextFrame = false;
-    
+
+    [NonSerialized] public List<AppearAnimator> elementsToAppear = new List<AppearAnimator>();
+    [SerializeField] private float timeBetweenAppearButtons = 0.2f;
+    private float lastAppearTime = 0;
 
     private void Awake()
     {
@@ -95,6 +98,31 @@ public class UIManager : MonoBehaviour
             levelListView.verticalNormalizedPosition = 1 - (float)GameManager.i.currentLevelId / GameManager.i.currentCollection.levels.Count;
             shouldUpdateLevelListPositionNextFrame = false;
         }
+
+        // Appear elements animations
+        if (elementsToAppear.Count > 0 && Time.time - lastAppearTime > timeBetweenAppearButtons)
+        {
+            float maxY = -float.MaxValue;
+            AppearAnimator maxAnim = null;
+            int maxI = -1;
+
+            for (int i = 0; i < elementsToAppear.Count; i++) // Get the highest element (on Y axis)
+            {
+                float y = elementsToAppear[i].transform.position.y;
+
+                if (y > maxY)
+                {
+                    maxY = y;
+                    maxI = i;
+                    maxAnim = elementsToAppear[i];
+                }
+            }
+
+            elementsToAppear.RemoveAt(maxI);
+            maxAnim.AppearAnimation(); // Animate
+
+            lastAppearTime = Time.time; // Set timeout
+        }
     }
 
     public void SelectPanel(string panelName)
@@ -115,6 +143,9 @@ public class UIManager : MonoBehaviour
         panels[(int)currentPanel].SetActive(false);
         currentPanel = panel;
         panels[(int)currentPanel].SetActive(true);
+
+        // Cancel buttons animations
+        elementsToAppear.Clear();
 
         // Init panels
         if (currentPanel == Panel.gameMenu)

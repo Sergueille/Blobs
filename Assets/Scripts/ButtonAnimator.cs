@@ -15,6 +15,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     [SerializeField] private bool spinIcon;
     [SerializeField] private float spinDuration;
 
+
     public void Click()
     {
         if (spinIcon)
