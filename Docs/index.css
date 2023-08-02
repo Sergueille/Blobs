@@ -194,7 +194,7 @@ nav {
 
 .nav-link {
     margin: 10px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     text-decoration: none;
 }
 
@@ -263,6 +263,34 @@ img {
 }
 
 /* MEDIA */
+
+@media screen and (max-width: 1000px) {
+    .page {
+        margin: 4rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .page {
+        margin: 2rem;
+    }
+
+    nav {
+        height: 4rem;
+    }
+
+    .site-title {
+        font-size: 1.5rem;
+    }
+
+    .slash {
+        font-size: 2rem;
+    }   
+
+    .nav-link {
+        font-size: 1.5rem;
+    }   
+}
 
 @media (prefers-color-scheme: dark) {
     * {
