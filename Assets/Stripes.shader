@@ -2,8 +2,7 @@ Shader "Unlit/Test"
 {
     Properties
     {
-        _ColorA ("Color A", Color) = (.2, .2, .2, 1)
-        _ColorB ("Color B", Color) = (.4, .4, .4, 1)
+        _MainTex ("Main texture", 2D) = "black" {}
         _Size ("Size", Float) = 0
         _Shift ("Shift", Float) = 0
         _Discard ("Discard", Range(0, 1)) = 0
@@ -23,6 +22,7 @@ Shader "Unlit/Test"
             struct appdata
             {
                 float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
             };
 
             struct v2f
@@ -31,8 +31,7 @@ Shader "Unlit/Test"
                 float4 vertex : SV_POSITION;
             };
 
-            fixed4 _ColorA;
-            fixed4 _ColorB;
+            sampler2D _MainTex;
             float _Size;
             float _Shift;
             float _Discard;
@@ -41,17 +40,17 @@ Shader "Unlit/Test"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 pos = float2(((_ScreenParams.x / 2 - i.vertex.x) / _ScreenParams.y) + _Shift, i.vertex.y / _ScreenParams.y + _Shift);
-
                 if ((pos.x + pos.y) % _Size < _Size * _Discard) discard;
-
-                bool isA = (pos.x + pos.y) % _Size < _Size / 2;
-                return isA ? _ColorA : _ColorB;
+                float4 res = tex2D(_MainTex, i.uv);
+                res.a = 1.0;
+                return res;
             }
             ENDCG
         }
