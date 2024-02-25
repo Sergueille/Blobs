@@ -131,6 +131,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         transitionStripes.SetFloat("_Discard", 1);
+        StartCoroutine(ScreenParticlesCoroutine());
 
         tutoHand.gameObject.SetActive(false);
 
@@ -152,9 +153,9 @@ public class GameManager : MonoBehaviour
 
         // Key controls
         Vector2Int direction = Vector2Int.zero;
-        if (Input.GetKeyDown(KeyCode.Q)) direction = Vector2Int.left;
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.A)) direction = Vector2Int.left;
         if (Input.GetKeyDown(KeyCode.D)) direction = Vector2Int.right;
-        if (Input.GetKeyDown(KeyCode.Z)) direction = Vector2Int.up;
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.W)) direction = Vector2Int.up;
         if (Input.GetKeyDown(KeyCode.S)) direction = Vector2Int.down;
 
         // Slide controls
@@ -263,7 +264,8 @@ public class GameManager : MonoBehaviour
             RestartLevel();
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        /*
+        if (Input.GetKeyDown(KeyCode.RightArrow)) 
         {
             currentLevelId += 1;
             currentLevelId %= currentCollection.levels.Count;
@@ -282,6 +284,7 @@ public class GameManager : MonoBehaviour
             currentLevelId = 0;
             MakeLevel(currentLevelId);
         }
+        */
 
         // Show move count
         if (PlayerPrefs.HasKey(GAME_FINISHED) || !currentCollection.isMainCollection)
@@ -341,17 +344,7 @@ public class GameManager : MonoBehaviour
         levelsCompletedInCollection = Mathf.Max(levelsCompletedInCollection, currentLevelId);
         PlayerPrefs.SetInt(LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName, levelsCompletedInCollection);
 
-        for (int i = 0; i < levelCompleteParticleCount; i++)
-        {
-            Vector2 randomPos = new Vector2(
-                UnityEngine.Random.Range(-mainCamera.orthographicSize, mainCamera.orthographicSize) * Screen.width / Screen.height,
-                UnityEngine.Random.Range(-mainCamera.orthographicSize, mainCamera.orthographicSize)
-            );
-
-            CreateParticles((GameColor)UnityEngine.Random.Range((int)GameColor.red, (int)GameColor.brown + 1), randomPos, levelCompleteParticlesScale);
-        
-            yield return new WaitForSeconds(levelCompleteDuration / levelCompleteParticleCount);
-        }
+        yield return new WaitForSeconds(levelCompleteDuration);
 
         // Show end!
         if (currentCollection.isMainCollection && currentLevelId == currentCollection.levels.Count - 1)
@@ -931,12 +924,12 @@ public class GameManager : MonoBehaviour
         MakeTransition(() => {
             RemoveCurrentLevel();
             UIManager.i.SelectPanelImmediately(UIManager.Panel.end); // Statistics are set by UIManager
-            StartCoroutine(EndParticlesCoroutine());
+            StartCoroutine(ScreenParticlesCoroutine());
             PlayerPrefs.SetInt(GAME_FINISHED, 1);
         });
     }
 
-    private IEnumerator EndParticlesCoroutine()
+    private IEnumerator ScreenParticlesCoroutine()
     {
         for (int i = 0; i < endParticlesDuration * endParticlesPerSecond; i++)
         {

@@ -4,6 +4,7 @@ using UnityEngine;
 public class Blob : LevelObject
 {
     [SerializeField] private SpriteRenderer blobSprite;
+    [SerializeField] private SpriteRenderer liquidSprite;
 
     [SerializeField] private GameObject eyePrefab;
 
@@ -22,6 +23,7 @@ public class Blob : LevelObject
     [SerializeField] private LeanTweenType squashTweenType;
 
     [SerializeField] private RandomRange eyesSize;
+    [SerializeField] private float liquidColorMultiplier = 0.9f;
 
     [System.NonSerialized] public bool stoppedByDiamond = false;
     [System.NonSerialized] public Vector2Int lastFusionPosition = Vector2Int.one * -1;
@@ -140,6 +142,7 @@ public class Blob : LevelObject
 
         // Remove background
         blobSprite.enabled = false;
+        liquidSprite.enabled = false;
     }
 
     private void AddEyeVisuals()
@@ -176,13 +179,18 @@ public class Blob : LevelObject
 
     protected override void SetColorVisual(bool immediate = false)
     {        
-        if (immediate)
+        if (immediate) 
+        {
             blobSprite.color = GameManager.i.colors[(int)data.color];
+            liquidSprite.color = GameManager.i.colors[(int)data.color] * liquidColorMultiplier;
+        }
         else
         {
             LeanTween.color(blobSprite.gameObject, GameManager.i.colors[(int)data.color], colorTransitionDuration);
+            LeanTween.color(liquidSprite.gameObject, GameManager.i.colors[(int)data.color], colorTransitionDuration);
         }
         
         blobSprite.material = GameManager.i.GetColorMaterial(data.color);
+        liquidSprite.material = GameManager.i.GetColorMaterial(data.color);
     }
 }
