@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 954094273966440131}
   - component: {fileID: 954094273966440130}
   m_Layer: 6
-  m_Name: Test
+  m_Name: LiquidColor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,7 +147,7 @@ MonoBehaviour:
   eyesSize:
     min: 0.3
     max: 0.4
-  liquidColorMultiplier: 0.9
+  liquidColorMultiplier: 0.15
 --- !u!1 &9215958641539934639
 GameObject:
   m_ObjectHideFlags: 0

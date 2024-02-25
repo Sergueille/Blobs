@@ -179,15 +179,20 @@ public class Blob : LevelObject
 
     protected override void SetColorVisual(bool immediate = false)
     {        
+        Color color = GameManager.i.colors[(int)data.color];
         if (immediate) 
         {
-            blobSprite.color = GameManager.i.colors[(int)data.color];
-            liquidSprite.color = GameManager.i.colors[(int)data.color] * liquidColorMultiplier;
+            blobSprite.color = color;
+
+            color.a = liquidColorMultiplier;
+            liquidSprite.color = color;
         }
         else
         {
-            LeanTween.color(blobSprite.gameObject, GameManager.i.colors[(int)data.color], colorTransitionDuration);
-            LeanTween.color(liquidSprite.gameObject, GameManager.i.colors[(int)data.color], colorTransitionDuration);
+            LeanTween.color(blobSprite.gameObject, color, colorTransitionDuration);
+            
+            color.a = liquidColorMultiplier;
+            LeanTween.color(liquidSprite.gameObject, color, colorTransitionDuration);
         }
         
         blobSprite.material = GameManager.i.GetColorMaterial(data.color);
