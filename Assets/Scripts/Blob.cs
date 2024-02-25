@@ -184,14 +184,14 @@ public class Blob : LevelObject
         {
             blobSprite.color = color;
 
-            color.a = liquidColorMultiplier;
+            color.a *= liquidColorMultiplier;
             liquidSprite.color = color;
         }
         else
         {
             LeanTween.color(blobSprite.gameObject, color, colorTransitionDuration);
-            
-            color.a = liquidColorMultiplier;
+
+            color.a *= liquidColorMultiplier;
             LeanTween.color(liquidSprite.gameObject, color, colorTransitionDuration);
         }
         

@@ -19,7 +19,7 @@ stairs
 .....
 ...##
 .####
-- 9
+- 8
 a blob green 1
 b end  green 1
 -
@@ -149,7 +149,7 @@ e.a..
 .....
 ..d.#
 #.###
-- 13
+- 10
 a blob red     1
 b blob red     2
 c blob blue    1
@@ -186,7 +186,7 @@ a.xyzb
 #e..##
 #...d.
 ###.##
-- 17
+- 16
 a blob green  1
 b blob green  1
 c blob red    1
@@ -485,7 +485,7 @@ a.b#
 .!..
 .!..
 #y.#
-- 11
+- 5
 a blob red      2
 b blob green    2
 c blob blue     1
