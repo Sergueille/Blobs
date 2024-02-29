@@ -9,12 +9,20 @@ public static class LevelLoader
 
     public static LevelCollection ReadMainCollection()
     {
-        TextAsset file = Resources.Load<TextAsset>("main");
+        LevelCollection res = ReadResourcesCollection("main");
+        res.isMainCollection = true;
+        return res;
+    }
+
+    public static LevelCollection ReadResourcesCollection(string collectionName)
+    {
+        TextAsset file = Resources.Load<TextAsset>(collectionName);
         currentText = file.text;
         textPosition = 0;
         LevelCollection res = ReadCollectionText();
-        res.isMainCollection = true;
-        res.fileName = "_MAIN";
+        res.isMainCollection = false;
+        res.isResourcesCollection = true;
+        res.fileName = collectionName;
         return res;
     }
 

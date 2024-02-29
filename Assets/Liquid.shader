@@ -46,7 +46,10 @@ Shader "Unlit/Liquid"
             fixed4 frag (v2f i) : SV_Target
             {
                 float ratio = _Previous_TexelSize.x * _Previous_TexelSize.w;
-                fixed4 flow = tex2D(_FlowMap, (i.uv + float2(_CosTime.y * ratio, _SinTime.y) * _FlowSpeed.g) * float2(1, ratio));
+                fixed4 flow1 = tex2D(_FlowMap, (i.uv + float2(_CosTime.y * ratio, _SinTime.y) * _FlowSpeed.g) * float2(1, ratio));
+                fixed4 flow2 = tex2D(_FlowMap, (i.uv + float2(_SinTime.z * ratio, _CosTime.z) * _FlowSpeed.g) * float2(1, ratio));
+
+                fixed4 flow = flow1 * 0.8 + flow2 * 0.2;
 
                 fixed2 amount = (flow.rg - fixed2(0.5, 0.5)) * _FlowSpeed.r * flow.b * unity_DeltaTime.z;
 

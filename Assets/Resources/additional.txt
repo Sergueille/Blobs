@@ -1,0 +1,37 @@
+Additional collection
+More levels! Great!
+-
+
+three in a row
+###.##
+###..#
+####..
+.a###.
+.....b
+#!#c##
+#!#..#
+#!##d.
+#.###.
+....##
+..y###
+#..###
+- 57
+a blob red     1
+b blob blue    1
+c blob magenta 1
+d blob green   1
+y end  brown   4
+-
+
+level 2
+a!!!?#z
+.###!#?
+.!.#!#.
+..b#!..
+######.
+- 57
+a blob blue  1
+b blob green 1
+z end  brown 2
+-
+

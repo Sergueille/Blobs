@@ -49,6 +49,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI statsText;
     public TextMeshProUGUI endStatsText;
 
+    public TextMeshProUGUI continueBtnLabel;
+
     private Coroutine levelTitleCoroutine;
 
     private RectTransform canvasTransform;
@@ -68,27 +70,24 @@ public class UIManager : MonoBehaviour
     {
         canvasTransform = gameObject.GetComponent<RectTransform>();
 
-        if (!PlayerPrefs.HasKey(GameManager.MAIN_COLLECTION)) // Do not show menu on first time
-        {
-            currentPanel = Panel.ingame;
-            Continue();
-        }
-        else
-        {
-            currentPanel = Panel.mainMenu;
-        }
-
         for (int i = 0; i < (int)Panel.valueCount; i++)
         {
-            if (i == (int)currentPanel)
-                panels[i].SetActive(true);
-            else
-                panels[i].SetActive(false);
+            panels[i].SetActive(false);
         }
 
         levelTitle.transform.position = new Vector3(0, -GameManager.i.mainCamera.orthographicSize - levelTitleScreenMargin, 0);
 
         versionText.text = Application.version;
+
+        
+        if (!PlayerPrefs.HasKey(GameManager.MAIN_COLLECTION)) // First time?
+        {
+            continueBtnLabel.text = LocalizationManager.GetValue("start_btn");
+        }
+        else
+        {
+            continueBtnLabel.text = LocalizationManager.GetValue("continue_btn");
+        }
     }
 
     private void Update()
@@ -133,6 +132,8 @@ public class UIManager : MonoBehaviour
 
     public void SelectPanel(Panel panel)
     {
+        if (GameManager.i.isTransitionning) return;
+
         GameManager.i.MakeTransition(() => {
             SelectPanelImmediately(panel);
         });
@@ -167,6 +168,13 @@ public class UIManager : MonoBehaviour
             Util.DestroyChildren(collectionList.gameObject);
             string[] fileNames = Directory.GetFiles(Application.persistentDataPath);
 
+            // Add additional official levels
+            GameObject collUI = Instantiate(collectionPrefab, collectionList);
+            TextMeshProUGUI text = collUI.GetComponentInChildren<TextMeshProUGUI>();
+            text.text = "Additional levels";
+            Button btn = collUI.GetComponentInChildren<Button>();
+            btn.onClick.AddListener(() => LoadCollectionFromResources("additional"));
+
             if (fileNames.Length == 0)
             {
                 Instantiate(noCollectionPrefab, collectionList);
@@ -177,10 +185,10 @@ public class UIManager : MonoBehaviour
                 string fileName = fullPath.Split('\\', '/')[^1];
                 string fileNameWithoutExtension = fileName.Split('.')[0];
 
-                GameObject collUI = Instantiate(collectionPrefab, collectionList);
-                TextMeshProUGUI text = collUI.GetComponentInChildren<TextMeshProUGUI>();
+                collUI = Instantiate(collectionPrefab, collectionList);
+                text = collUI.GetComponentInChildren<TextMeshProUGUI>();
                 text.text = fileName;
-                Button btn = collUI.GetComponentInChildren<Button>();
+                btn = collUI.GetComponentInChildren<Button>();
                 btn.onClick.AddListener(() => LoadCollectionFromFile(fileNameWithoutExtension));
             }
         }
@@ -294,6 +302,12 @@ public class UIManager : MonoBehaviour
             SelectPanelImmediately(Panel.ingame);
             GameManager.i.MakeLevel(GameManager.i.currentLevelId);
         });
+    }
+
+    public void LoadCollectionFromResources(string fileName)
+    {
+        GameManager.i.LoadCollection(LevelLoader.ReadResourcesCollection(fileName));
+        SelectPanel(Panel.gameMenu);
     }
 
     public void LoadCollectionFromFile(string fileName)

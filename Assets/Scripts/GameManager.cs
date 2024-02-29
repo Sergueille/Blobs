@@ -122,16 +122,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI moveCountText;
     public int moveCount;
 
+    [NonSerialized]
+    public bool isTransitionning;
+
     private void Awake()
     {
         i = this;
         tiles = new List<GameObject>();
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
         transitionStripes.SetFloat("_Discard", 1);
-        StartCoroutine(ScreenParticlesCoroutine());
 
         tutoHand.gameObject.SetActive(false);
 
@@ -142,6 +144,10 @@ public class GameManager : MonoBehaviour
         startTime = Time.time;
 
         moveCountText.gameObject.SetActive(false);  
+
+        yield return ScreenParticlesCoroutine();
+
+        UIManager.i.SelectPanel("MainMenu");
     }
 
     private void Update()
@@ -323,6 +329,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        if (isTransitionning) return;
+
         AudioSource.PlayClipAtPoint(rewindSound, mainCamera.transform.position, globalVolume);
         MakeLevelWithTransition(currentLevelId);
 
@@ -368,6 +376,11 @@ public class GameManager : MonoBehaviour
 
     public void MakeTransition(Action callback)
     {
+        if (isTransitionning) {
+            Debug.Log("Fired transition while already active!");
+        }
+
+        isTransitionning = true;
         LeanTween.value(1, 0, transitionDuration / 2).setEaseInOutExpo().setOnUpdate(val => {
             float actualVal = val < 0.01 ? 0 : val;
             transitionStripes.SetFloat("_Discard", actualVal);
@@ -382,6 +395,7 @@ public class GameManager : MonoBehaviour
                 transitionStripes.SetFloat("_Discard", val);
             }).setOnComplete(() => {
                 transitionStripes.SetFloat("_Discard", 1);
+                isTransitionning = false;
             });
         });
     }
@@ -952,6 +966,7 @@ public class LevelCollection
     public string fileName;
     public string info;
     public bool isMainCollection;
+    public bool isResourcesCollection;
 }
 
 public class LevelData

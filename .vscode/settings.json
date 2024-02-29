@@ -1,15 +1,17 @@
 {
-    "files.exclude":
-    {
-        "**/*.meta":true,
+    "files.exclude": {
+        "**/*.meta": true
     },
     "cSpell.words": [
         "appdata",
         "CGPROGRAM",
         "ENDCG",
         "Prefs",
+        "Tansitionning",
         "TEXCOORD",
+        "Transitionning",
         "UGUI"
     ],
-    "dotnet.preferCSharpExtension": true
+    "dotnet.preferCSharpExtension": true,
+    "dotnet.defaultSolution": "Blobs.sln"
 }

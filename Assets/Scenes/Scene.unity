@@ -1608,6 +1608,7 @@ MonoBehaviour:
   versionText: {fileID: 489634321}
   statsText: {fileID: 1468364589}
   endStatsText: {fileID: 893824220}
+  continueBtnLabel: {fileID: 1983996662}
   timeBetweenAppearButtons: 0.02
 --- !u!1 &320555910
 GameObject:
@@ -4506,7 +4507,8 @@ PrefabInstance:
       propertyPath: m_text
       value: Reprendre
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5557177135854867617, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -4622,6 +4624,44 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!84 &727047149
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1080
+  m_Height: 1920
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &728827465
 GameObject:
   m_ObjectHideFlags: 0
@@ -5322,7 +5362,7 @@ MonoBehaviour:
   inverterPrefab: {fileID: 6583482459921523722, guid: d6ff1d3e7355aad4fa6611aa4100e837, type: 3}
   bgStripes: {fileID: 2100000, guid: 9f3bfa7c51fd3ad48a7a0437e5468bb8, type: 2}
   transitionStripes: {fileID: 2100000, guid: 79821531854af1846bda9f19868f1ff6, type: 2}
-  stripesSpeed: 0.02
+  stripesSpeed: 0.04
   transitionDuration: 1
   slideSensitivity: 0.7
   globalVolume: 1
@@ -5356,8 +5396,8 @@ MonoBehaviour:
   levelCompleteDuration: 0.75
   levelCompleteParticleCount: 10
   levelCompleteParticlesScale: 1.7
-  endParticlesDuration: 2
-  endParticlesPerSecond: 5
+  endParticlesDuration: 1
+  endParticlesPerSecond: 10
   forbiddenSlideZoneSize: 0.05
   tutoHand: {fileID: 266734863}
   tutoHandMaxY: -2.3
@@ -8702,7 +8742,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 96
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1975112940}
+  m_TargetTexture: {fileID: 727047149}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -9657,44 +9697,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &1975112940
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+--- !u!114 &1983996662 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5760128071341137750, guid: a95a1b0c0f72e9745845765501d4eb69, type: 3}
+  m_PrefabInstance: {fileID: 694481256}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1080
-  m_Height: 1920
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
+  m_EditorClassIdentifier: 
 --- !u!1 &1996296240
 GameObject:
   m_ObjectHideFlags: 0
