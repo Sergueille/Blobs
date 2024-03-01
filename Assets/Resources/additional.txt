@@ -37,19 +37,18 @@ y end  brown   4
 
 specific conditions
 ##.....
-....#.b
-...##.#
-#...#.#
-#.a.!..
+....#.?
+a..##.#
+#...!..
 #......
-##.##..
+##.##b.
 ##!####
 ##.###z
 ##.#!..
 #!..?#c
-- 31
-a blob blue   1
-b blob yellow 1
-c blob red    1
-z end  red    3
+- 26
+a blob blue 1
+b blob blue 1
+c blob red  1
+z end  red  3
 -
