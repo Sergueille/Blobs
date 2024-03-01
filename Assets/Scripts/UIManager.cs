@@ -290,8 +290,17 @@ public class UIManager : MonoBehaviour
         {
             if (PlayerPrefs.GetInt(GameManager.MAIN_COLLECTION) > 0)
                 GameManager.i.LoadCollection(LevelLoader.ReadMainCollection());
-            else
-                GameManager.i.LoadCollection(LevelLoader.ReadCollectionFromFile(PlayerPrefs.GetString(GameManager.COLLECTION_NAME)));
+            else 
+            {
+                if (PlayerPrefs.HasKey(GameManager.WAS_IN_RESOURCE) && PlayerPrefs.GetInt(GameManager.WAS_IN_RESOURCE) > 0)
+                {
+                    GameManager.i.LoadCollection(LevelLoader.ReadResourcesCollection(PlayerPrefs.GetString(GameManager.COLLECTION_NAME)));
+                }
+                else
+                {
+                    GameManager.i.LoadCollection(LevelLoader.ReadCollectionFromFile(PlayerPrefs.GetString(GameManager.COLLECTION_NAME)));
+                }
+            }
         }
         else
         {

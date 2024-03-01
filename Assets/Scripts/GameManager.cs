@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public const string LAST_LEVEL_ON_COLLECTION = "LastLevelOnCollection";
     public const string MAIN_COLLECTION = "MainCollection";
     public const string COLLECTION_NAME = "CollectionName";
+    public const string WAS_IN_RESOURCE = "WasInResource";
 
     public const string GAME_FINISHED = "GameFinished";
 
@@ -408,6 +409,7 @@ public class GameManager : MonoBehaviour
 
         PlayerPrefs.SetInt(LAST_LEVEL_ON_COLLECTION + currentCollection.fileName, levelIndex);
         PlayerPrefs.SetInt(MAIN_COLLECTION, currentCollection.isMainCollection ? 1 : 0);
+        PlayerPrefs.SetInt(WAS_IN_RESOURCE, currentCollection.isResourcesCollection ? 1 : 0);
         PlayerPrefs.SetString(COLLECTION_NAME, currentCollection.fileName);
 
         currentLevelId = levelIndex;
