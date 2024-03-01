@@ -2,6 +2,18 @@ Additional collection
 More levels! Great!
 -
 
+complicated logistics
+.##.c
+a.!.#
+....b
+.z#..
+- 31
+a blob blue  1
+b blob red   1
+c blob green 1
+z end  brown 2
+-
+
 three in a row
 ###.##
 ###..#
@@ -23,15 +35,21 @@ d blob green   1
 y end  brown   4
 -
 
-level 2
-a!!!?#z
-.###!#?
-.!.#!#.
-..b#!..
-######.
-- 57
-a blob blue  1
-b blob green 1
-z end  brown 2
+specific conditions
+##.....
+....#.b
+...##.#
+#...#.#
+#.a.!..
+#......
+##.##..
+##!####
+##.###z
+##.#!..
+#!..?#c
+- 31
+a blob blue   1
+b blob yellow 1
+c blob red    1
+z end  red    3
 -
-
