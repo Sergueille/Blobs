@@ -216,6 +216,9 @@ public class UIManager : MonoBehaviour
                 return LocalizationManager.GetValue(key) + ": " + value.ToString() + "\n";
             }
         }
+
+        // Update musics
+        AudioManager.i.SetMusic(currentPanel != Panel.ingame && currentPanel != Panel.mainMenu);
     }
 
     public void RefreshLevelList()

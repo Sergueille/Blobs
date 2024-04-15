@@ -46,9 +46,28 @@ a..##.#
 ##.###z
 ##.#!..
 #!..?#c
-- 26
+- 15
 a blob blue 1
 b blob blue 1
 c blob red  1
 z end  red  3
+-
+
+lvl 4
+#a######
+#!####..
+..!#...d
+........
+##.##...
+#c.z####
+#.#.####
+#...####
+##.##...
+##....#b
+- 15
+a blob blue   1
+b blob red    1
+c blob green  1
+d blob blue   1
+z end  yellow 2
 -
