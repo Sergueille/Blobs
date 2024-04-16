@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
 
     public const string SLIDE_SENSITIVITY = "SlideSensitivity";
     public const string GLOBAL_VOLUME = "GlobalVolume";
+    public const string MUSIC_VOLUME = "MusicVolume";
     public const string COLORBLIND_MODE = "ColorblindMode";
 
     public static GameManager i;
@@ -69,7 +70,8 @@ public class GameManager : MonoBehaviour
     public float transitionDuration;
 
     [SerializeField] private float slideSensitivity;
-    [SerializeField] private float globalVolume = 1;
+    public float globalVolume = 1;
+    public float musicVolume = 1;
 
     [SerializeField] private AudioClip[] smallBlobSounds;
     [SerializeField] private AudioClip[] bigBlobSounds;
@@ -94,6 +96,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Slider slideSensitivitySlider;
     [SerializeField] private Slider globalVolumeSlider;
+    [SerializeField] private Slider musicVolumeSlider;
     [SerializeField] private TMP_Dropdown languageDropdown;
     [SerializeField] private Toggle colorblindToggle;
 
@@ -796,6 +799,9 @@ public class GameManager : MonoBehaviour
     {
         globalVolume = GetSettingFloat(GLOBAL_VOLUME, 1.0f);
         globalVolumeSlider.value = globalVolume;
+        
+        musicVolume = GetSettingFloat(MUSIC_VOLUME, 1.0f);
+        musicVolumeSlider.value = musicVolume;
 
         slideSensitivity = GetSettingFloat(SLIDE_SENSITIVITY, 0.7f);
         slideSensitivitySlider.value = slideSensitivity;
@@ -838,6 +844,13 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetFloat(GLOBAL_VOLUME, volume);
         UpdateSettings();
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        PlayerPrefs.SetFloat(MUSIC_VOLUME, volume);
+        UpdateSettings();
+        AudioManager.i.UpdateVolumes();
     }
 
     public void SetSlideSensitivity(float val)

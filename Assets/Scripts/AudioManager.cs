@@ -19,7 +19,7 @@ public class AudioManager : MonoBehaviour
     }
 
     private void Start() {
-        mainMusic.volume = baseVolume;
+        mainMusic.volume = GetTargetVolume();
         menuMusic.volume = 0;
     }
     
@@ -35,8 +35,20 @@ public class AudioManager : MonoBehaviour
     }
 
     private void VolumeTransition(AudioSource source, float target) {
-        LeanTween.value(gameObject, source.volume, target, transitionDuration).setOnUpdate(val => {
-            source.volume = val * baseVolume;
+        float targetVolume =  GetTargetVolume();
+        LeanTween.value(gameObject, targetVolume == 0 ? 0 : source.volume / targetVolume, target, transitionDuration).setOnUpdate(val => {
+            source.volume = val * GetTargetVolume();
         });
+    }
+
+    public void UpdateVolumes()
+    {
+        // HACK: works only if set while inside menus
+        menuMusic.volume = GetTargetVolume();
+    }
+
+    private float GetTargetVolume()
+    {
+        return baseVolume * GameManager.i.musicVolume;
     }
 }

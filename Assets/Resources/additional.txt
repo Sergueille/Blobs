@@ -14,25 +14,37 @@ c blob green 1
 z end  brown 2
 -
 
-three in a row
-###.##
-###..#
-####..
-.a###.
-.....b
-#!#c##
-#!#..#
-#!##d.
-#.###.
-....##
-..y###
-#..###
-- 57
-a blob red     1
-b blob blue    1
-c blob magenta 1
-d blob green   1
-y end  brown   4
+help the yellow
+##a.##d#
+##!###.#
+..!#....
+........
+##?##..#
+#..z####
+- 12
+a blob yellow 1
+d blob blue   1
+z end  yellow 2
+-
+
+circular trap
+##a.##d#
+##!.##.#
+...##...
+........
+##.##..#
+#.zc####
+#.#.####
+#.y.####
+##.##...
+##....#b
+- 15
+a blob yellow 1
+b blob red    1
+c blob green  1
+d blob blue   1
+y end  blue   1
+z end  yellow 2
 -
 
 specific conditions
@@ -53,21 +65,23 @@ c blob red  1
 z end  red  3
 -
 
-lvl 4
-#a######
-#!####..
-..!#...d
-........
-##.##...
-#c.z####
-#.#.####
-#...####
-##.##...
-##....#b
-- 15
-a blob blue   1
-b blob red    1
-c blob green  1
-d blob blue   1
-z end  yellow 2
+three in a row
+###.##
+###..#
+####..
+.a###.
+.....b
+#!#c##
+#!#..#
+#!##d.
+#.###.
+....##
+..y###
+#..###
+- 57
+a blob red     1
+b blob blue    1
+c blob magenta 1
+d blob green   1
+y end  brown   4
 -

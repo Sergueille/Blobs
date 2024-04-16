@@ -30,7 +30,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Discard: 1
-    - _Shift: 4.227377
+    - _Shift: 65.939735
     - _Size: 0.25
     m_Colors:
     - _ColorA: {r: 0.6, g: 0.6, b: 0.6, a: 1}
