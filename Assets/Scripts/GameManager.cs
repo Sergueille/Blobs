@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     public const string MAIN_COLLECTION = "MainCollection";
     public const string COLLECTION_NAME = "CollectionName";
     public const string WAS_IN_RESOURCE = "WasInResource";
+    
+    public const string LAST_VERSION = "LastVersion";
 
     public const string GAME_FINISHED = "GameFinished";
 
@@ -129,6 +131,9 @@ public class GameManager : MonoBehaviour
     [NonSerialized]
     public bool isTransitionning;
 
+    public bool speedrunMode = false;
+    public float speedrunStartTime = -1;
+
     private void Awake()
     {
         i = this;
@@ -151,7 +156,17 @@ public class GameManager : MonoBehaviour
 
         yield return ScreenParticlesCoroutine();
 
-        UIManager.i.SelectPanel("MainMenu");
+        if (PlayerPrefs.HasKey(GameManager.MAIN_COLLECTION) // If already played before...
+         && GetSettingString(GameManager.LAST_VERSION, "none") != Application.version) // .. and have a different version
+        {
+            UIManager.i.SelectPanel("update");
+        }
+        else 
+        {
+            UIManager.i.SelectPanel("MainMenu");
+        }
+
+        PlayerPrefs.SetString(GameManager.LAST_VERSION, Application.version); // Update version
     }
 
     private void Update()
@@ -274,6 +289,14 @@ public class GameManager : MonoBehaviour
             RestartLevel();
         }
 
+#if UNITY_EDITOR
+        // Screenshot
+        if (Input.GetKeyDown(KeyCode.P)) {
+            ScreenCapture.CaptureScreenshot("screenshot-1-" + System.DateTime.Now.ToString("MM-dd-yy (HH-mm-ss)") + ".png", 4);
+            ScreenCapture.CaptureScreenshot("screenshot-2-" + System.DateTime.Now.ToString("MM-dd-yy (HH-mm-ss)") + ".png", 2);
+        }
+#endif
+
         /*
         if (Input.GetKeyDown(KeyCode.RightArrow)) 
         {
@@ -296,8 +319,14 @@ public class GameManager : MonoBehaviour
         }
         */
 
-        // Show move count
-        if (PlayerPrefs.HasKey(GAME_FINISHED) || !currentCollection.isMainCollection)
+        if (speedrunMode) // Show speedrun timer
+        {
+            moveCountText.gameObject.SetActive(true);
+            
+            int time = Mathf.FloorToInt(Time.time - speedrunStartTime);
+            moveCountText.text = $"<size=100>{time / 60}</size>:{(time % 60).ToString().PadLeft(2, '0')}";
+        }
+        else if (PlayerPrefs.HasKey(GAME_FINISHED) || !currentCollection.isMainCollection) // Show move count
         {
             moveCountText.gameObject.SetActive(true);
 
@@ -356,10 +385,16 @@ public class GameManager : MonoBehaviour
         levelsCompletedInCollection = Mathf.Max(levelsCompletedInCollection, currentLevelId);
         PlayerPrefs.SetInt(LEVEL_COMPLETED_ON_COLLECTION + currentCollection.fileName, levelsCompletedInCollection);
 
-        yield return new WaitForSeconds(levelCompleteDuration);
+        if (!speedrunMode)
+            yield return new WaitForSeconds(levelCompleteDuration);
 
         // Show end!
-        if (currentCollection.isMainCollection && currentLevelId == currentCollection.levels.Count - 1)
+        if (speedrunMode && currentLevelId == 48)
+        {
+            RemoveCurrentLevel();
+            EndSpeedrun(true);
+        }
+        else if (currentCollection.isMainCollection && currentLevelId == currentCollection.levels.Count - 1)
         {
             OnMainCollectionFinished();
         }
@@ -384,8 +419,10 @@ public class GameManager : MonoBehaviour
             Debug.Log("Fired transition while already active!");
         }
 
+        float multiplier = speedrunMode ? 0.5f : 1.0f;
+
         isTransitionning = true;
-        LeanTween.value(1, 0, transitionDuration / 2).setEaseInOutExpo().setOnUpdate(val => {
+        LeanTween.value(1, 0, transitionDuration * multiplier / 2).setEaseInOutExpo().setOnUpdate(val => {
             float actualVal = val < 0.01 ? 0 : val;
             transitionStripes.SetFloat("_Discard", actualVal);
         }).setOnComplete(() => {
@@ -395,7 +432,7 @@ public class GameManager : MonoBehaviour
             HideTutorial();
             callback();
 
-            LeanTween.value(0, 1, transitionDuration / 2).setEaseInOutExpo().setOnUpdate(val => {
+            LeanTween.value(0, 1, transitionDuration * multiplier / 2).setEaseInOutExpo().setOnUpdate(val => {
                 transitionStripes.SetFloat("_Discard", val);
             }).setOnComplete(() => {
                 transitionStripes.SetFloat("_Discard", 1);
@@ -840,6 +877,15 @@ public class GameManager : MonoBehaviour
         else return defaultValue;
     }
 
+    public string GetSettingString(string settingName, string defaultValue)
+    {
+        if (PlayerPrefs.HasKey(settingName))
+        {
+            return PlayerPrefs.GetString(settingName);
+        }
+        else return defaultValue;
+    }
+
     public void SetGlobalVolume(float volume)
     {
         PlayerPrefs.SetFloat(GLOBAL_VOLUME, volume);
@@ -971,6 +1017,31 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(1.0f / (float)endParticlesPerSecond);
         }
+    }
+
+    public void StartSpeedrun()
+    {
+        speedrunStartTime = Time.time;
+        speedrunMode = true;
+
+        AudioManager.i.ToggleSpeedrunMusic(true);
+
+        LoadCollection(LevelLoader.ReadMainCollection());
+
+        MakeTransition(() => {
+            UIManager.i.SelectPanelImmediately(UIManager.Panel.ingame);
+            MakeLevel(0);
+        });
+    }
+
+    public void EndSpeedrun(bool showMenu)
+    {
+        speedrunMode = false;
+
+        AudioManager.i.ToggleSpeedrunMusic(false);
+
+        if (showMenu)
+            UIManager.i.SelectPanel(UIManager.Panel.speedrunEnd);
     }
 }
 

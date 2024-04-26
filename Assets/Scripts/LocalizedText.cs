@@ -25,4 +25,11 @@ public class LocalizedText : MonoBehaviour
     {
         text.text = LocalizationManager.GetValue(key);
     }
+
+    [ContextMenu("Reload locals")]
+    public void ReloadLocals()
+    {
+        LocalizationManager.LoadCSV();
+        UpdateText();
+    }
 }

@@ -51,4 +51,11 @@ public class AudioManager : MonoBehaviour
     {
         return baseVolume * GameManager.i.musicVolume;
     }
+
+    public void ToggleSpeedrunMusic(bool on)
+    {
+        float pitch = on ? -1.1f : 1.0f;
+        mainMusic.pitch = pitch;
+        menuMusic.pitch = pitch;
+    }
 }

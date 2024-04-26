@@ -18,7 +18,10 @@ public class UIManager : MonoBehaviour
         resetConfirmation,
         stats,
         end,
-        valueCount
+        update,
+        speedrunStart,
+        speedrunEnd,
+        valueCount,
     }
 
     public static UIManager i;
@@ -60,6 +63,8 @@ public class UIManager : MonoBehaviour
     [NonSerialized] public List<AppearAnimator> elementsToAppear = new List<AppearAnimator>();
     [SerializeField] private float timeBetweenAppearButtons = 0.2f;
     private float lastAppearTime = 0;
+
+    public TextMeshProUGUI speedrunEndTimer;
 
     private void Awake()
     {
@@ -215,6 +220,11 @@ public class UIManager : MonoBehaviour
                     
                 return LocalizationManager.GetValue(key) + ": " + value.ToString() + "\n";
             }
+        }
+        else if (currentPanel == Panel.speedrunEnd)
+        {
+            int time = Mathf.FloorToInt(Time.time - GameManager.i.speedrunStartTime);
+            speedrunEndTimer.text = $"{time / 60}:{(time % 60).ToString().PadLeft(2, '0')}";
         }
 
         // Update musics
@@ -391,5 +401,15 @@ public class UIManager : MonoBehaviour
     public void RedirectToDocs()
     {
         Application.OpenURL("https://sergueille.github.io/Blobs/Docs/levels");
+    }
+
+    public void IngameMenuBtn()
+    {
+        if (GameManager.i.speedrunMode) {
+            GameManager.i.EndSpeedrun(false);
+        }
+        else {
+            SelectPanel(Panel.gameMenu);
+        }
     }
 }

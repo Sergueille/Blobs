@@ -89,7 +89,7 @@ public static class LocalizationManager
         return key;
     }
 
-    private static void LoadCSV()
+    public static void LoadCSV()
 	{
         file = Resources.Load<TextAsset>("localization");
         levelFile = Resources.Load<TextAsset>("level_localization");
