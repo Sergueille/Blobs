@@ -4,6 +4,48 @@
     box-sizing: border-box;
 }
 
+
+.org-name {
+    display: block;
+    text-decoration: none;
+    user-select: none;
+    color: #398811;
+    font-weight: bolder;
+    font-size: 5rem;
+    margin-top: 200px;
+    margin-bottom: 200px;
+    line-height: 80%;
+    text-shadow: 
+        0px 0px 0 #398811, 
+        5px 5px 0 #604040, 
+        10px 10px 0px #202020
+    ;
+    transition: 200ms;
+    text-align: left;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    width: fit-content;
+}
+
+.org-name:hover,
+.org-name:focus-within {
+    outline: none;
+    color: #fff;
+    text-shadow: 
+        5px 5px 0 #398811, 
+        10px 10px 0 #604040, 
+        15px 15px 0px #202020
+    ;
+}
+
+.org-name.nav {
+    font-size: 3rem;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
 body {
     margin: 0;
     background-color: var(--bg);
@@ -157,22 +199,7 @@ button.delete:hover, .btn.delete:hover {
 /* SPECIFIC */
 
 nav {
-    height: 5rem;
-
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: start;
-
-    padding-top: 7px;
-
-    font-size: 2rem;
-    font-weight: bold;
-
-    border-bottom: 1px solid var(--border);
-    box-shadow: #0008 0 0 15px -10px;
-
-    position: relative;
+    height: fit-content;
 }
 
 .site-title {
@@ -262,6 +289,10 @@ img {
     margin-top: 0;
 }
 
+ul {
+    padding-left: 15px;
+}
+
 /* MEDIA */
 
 @media screen and (max-width: 1000px) {
@@ -273,10 +304,6 @@ img {
 @media screen and (max-width: 600px) {
     .page {
         margin: 2rem;
-    }
-
-    nav {
-        height: 4rem;
     }
 
     .site-title {
